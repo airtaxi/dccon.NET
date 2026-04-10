@@ -1,0 +1,30 @@
+{
+  "info": {
+    "package_idx": 42885,
+    "title": "테스트 디시콘",
+    "description": "테스트 설명",
+    "main_img_path": "test_main_path",
+    "seller_name": "테스트판매자",
+    "reg_date_short": "2024.01.01",
+    "state": "S"
+  },
+  "detail": [
+    {
+      "path": "sticker_path_1",
+      "title": "스티커1",
+      "ext": "png",
+      "sort_no": 1
+    },
+    {
+      "path": "sticker_path_2",
+      "title": "스티커2",
+      "ext": "gif",
+      "sort_no": 2
+    }
+  ],
+  "tags": [
+    { "tag": "태그1" },
+    { "tag": "태그2" },
+    { "tag": "태그3" }
+  ]
+}

@@ -18,6 +18,7 @@ dccon.NET은 디시인사이드의 디시콘(DCcon) 스티커를 프로그래밍
 - 📦 **패키지 상세** — 패키지 정보, 스티커 목록, 태그 조회
 - ⬇️ **이미지 다운로드** — 개별 스티커 또는 패키지 전체 일괄 다운로드
 - ⚡ **병렬 다운로드** — 패키지 전체 다운로드 시 병렬 처리 + 진행 상태 콜백
+- 🚀 **NativeAOT 호환** — System.Text.Json 소스 제너레이션 기반, NativeAOT 배포 지원
 
 ## 설치
 
@@ -147,7 +148,7 @@ var result = await client.SearchAsync("페페", cancellationToken: cancellationT
 ## 의존성
 
 - [AngleSharp](https://anglesharp.github.io/) — HTML 파싱
-- [Newtonsoft.Json](https://www.newtonsoft.com/json) — JSON 역직렬화
+- [System.Text.Json](https://learn.microsoft.com/dotnet/standard/serialization/system-text-json/overview) — JSON 역직렬화 (소스 제너레이션 기반, NativeAOT 호환)
 
 ## 라이선스
 

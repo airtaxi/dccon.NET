@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/airtaxi/dccon.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/airtaxi/dccon.NET</PackageProjectUrl>
-    <Version>0.1.1</Version>
+    <Version>0.2.0</Version>
     <Authors>이호원</Authors>
     <Description>비공식 디시인사이드 디시콘(DCcon) .NET 라이브러리. 검색, 조회, 다운로드 기능을 제공합니다.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -24,8 +24,8 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="1.3.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
+    <PackageReference Include="System.Text.Json" Version="9.0.4" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 

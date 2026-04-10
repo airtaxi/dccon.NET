@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using dccon.NET.Exceptions;
 using dccon.NET.Http;
+using dccon.NET.Json;
 using dccon.NET.Models;
 using dccon.NET.Parsing;
-using Newtonsoft.Json.Linq;
 
 namespace dccon.NET;
 
@@ -180,39 +181,43 @@ public class DcconClient : IDcconClient, IDisposable
     {
         try
         {
-            var root = JObject.Parse(json);
-            var info = root["info"] ?? throw new DcconParsingException("패키지 상세 JSON에 'info' 필드가 없습니다.");
+            var response = JsonSerializer.Deserialize(json, DcconJsonContext.Default.PackageDetailResponse)
+                ?? throw new DcconParsingException("패키지 상세 JSON 파싱 결과가 null입니다.");
+
+            if (response.Info == null)
+                throw new DcconParsingException("패키지 상세 JSON에 'info' 필드가 없습니다.");
+
             var detail = new DcconPackageDetail
             {
-                PackageIndex = info["package_idx"]?.ToObject<int>() ?? 0,
-                Title = info["title"]?.ToString() ?? string.Empty,
-                Description = info["description"]?.ToString() ?? string.Empty,
-                MainImagePath = info["main_img_path"]?.ToString() ?? string.Empty,
-                SellerName = info["seller_name"]?.ToString() ?? string.Empty,
-                RegistrationDate = info["reg_date_short"]?.ToString() ?? string.Empty,
-                State = info["state"]?.ToString() ?? string.Empty
+                PackageIndex = response.Info.PackageIndex,
+                Title = response.Info.Title ?? string.Empty,
+                Description = response.Info.Description ?? string.Empty,
+                MainImagePath = response.Info.MainImagePath ?? string.Empty,
+                SellerName = response.Info.SellerName ?? string.Empty,
+                RegistrationDate = response.Info.RegistrationDate ?? string.Empty,
+                State = response.Info.State ?? string.Empty
             };
 
-            if (root["detail"] is JArray detailArray)
+            if (response.Detail != null)
             {
-                foreach (var item in detailArray)
+                foreach (var item in response.Detail)
                 {
                     var sticker = new DcconSticker
                     {
-                        Path = item["path"]?.ToString() ?? string.Empty,
-                        Title = item["title"]?.ToString() ?? string.Empty,
-                        Extension = item["ext"]?.ToString() ?? string.Empty,
-                        SortNumber = item["sort_no"]?.ToObject<int>() ?? 0
+                        Path = item.Path ?? string.Empty,
+                        Title = item.Title ?? string.Empty,
+                        Extension = item.Extension ?? string.Empty,
+                        SortNumber = item.SortNumber
                     };
                     detail.Stickers.Add(sticker);
                 }
             }
 
-            if (root["tags"] is JArray tagsArray)
+            if (response.Tags != null)
             {
-                foreach (var tagItem in tagsArray)
+                foreach (var tagItem in response.Tags)
                 {
-                    var tag = tagItem["tag"]?.ToString() ?? string.Empty;
+                    var tag = tagItem.Tag ?? string.Empty;
                     if (!string.IsNullOrEmpty(tag))
                         detail.Tags.Add(tag);
                 }
