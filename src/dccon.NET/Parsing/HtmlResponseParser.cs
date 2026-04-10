@@ -17,8 +17,7 @@ internal static class HtmlResponseParser
     /// </summary>
     public static SearchResult ParseSearchResult(string html, int currentPage)
     {
-        if (string.IsNullOrWhiteSpace(html))
-            throw new DcconParsingException("파싱할 HTML이 비어있습니다.");
+        if (string.IsNullOrWhiteSpace(html)) throw new DcconParsingException("파싱할 HTML이 비어있습니다.");
 
         try
         {
@@ -37,8 +36,7 @@ internal static class HtmlResponseParser
             {
                 var numberText = searchNumberElement.TextContent.Trim();
                 numberText = numberText.Replace("(", "").Replace("건)", "").Replace(",", "");
-                if (int.TryParse(numberText, out int totalCount))
-                    result.TotalCount = totalCount;
+                if (int.TryParse(numberText, out int totalCount)) result.TotalCount = totalCount;
             }
 
             // 패키지 목록 파싱
@@ -46,11 +44,9 @@ internal static class HtmlResponseParser
             foreach (var packageElement in packageElements)
             {
                 var packageIndexAttribute = packageElement.GetAttribute("package_idx");
-                if (string.IsNullOrEmpty(packageIndexAttribute))
-                    continue;
+                if (string.IsNullOrEmpty(packageIndexAttribute)) continue;
 
-                if (!int.TryParse(packageIndexAttribute, out int packageIndex))
-                    continue;
+                if (!int.TryParse(packageIndexAttribute, out int packageIndex)) continue;
 
                 var titleElement = packageElement.QuerySelector(".dcon_name");
                 var sellerElement = packageElement.QuerySelector(".dcon_seller");
@@ -87,29 +83,18 @@ internal static class HtmlResponseParser
                     // page_end가 없으면 마지막 일반 페이지 링크
                     var lastLink = pageLinks.Last();
                     var lastText = lastLink.TextContent.Trim();
-                    if (int.TryParse(lastText, out int lastPage))
-                        result.TotalPages = lastPage;
+                    if (int.TryParse(lastText, out int lastPage)) result.TotalPages = lastPage;
                 }
 
                 // 페이징이 없으면 (결과가 1페이지 이하) 현재 페이지 = 총 페이지
-                if (result.TotalPages == 0 && result.Packages.Count > 0)
-                    result.TotalPages = 1;
+                if (result.TotalPages == 0 && result.Packages.Count > 0) result.TotalPages = 1;
             }
-            else if (result.Packages.Count > 0)
-            {
-                result.TotalPages = 1;
-            }
+            else if (result.Packages.Count > 0) result.TotalPages = 1;
 
             return result;
         }
-        catch (DcconParsingException)
-        {
-            throw;
-        }
-        catch (Exception exception)
-        {
-            throw new DcconParsingException("HTML 파싱 중 오류가 발생했습니다.", exception);
-        }
+        catch (DcconParsingException) { throw; }
+        catch (Exception exception) { throw new DcconParsingException("HTML 파싱 중 오류가 발생했습니다.", exception); }
     }
 
     private static int ExtractPageNumberFromUrl(string url)
@@ -122,8 +107,7 @@ internal static class HtmlResponseParser
             var segments = uri.AbsolutePath.Split(['/'], StringSplitOptions.RemoveEmptyEntries);
 
             // segments: ["hot", "11", "title", "페페"] 또는 ["hot", "5"]
-            if (segments.Length >= 2 && int.TryParse(segments[1], out int pageNumber))
-                return pageNumber;
+            if (segments.Length >= 2 && int.TryParse(segments[1], out int pageNumber)) return pageNumber;
         }
         catch
         {

@@ -13,17 +13,12 @@ namespace dccon.NET.Http;
 /// <summary>
 /// DCcon 사이트와의 HTTP 통신을 담당하는 클래스
 /// </summary>
-internal class DcconHttpClient
+internal class DcconHttpClient(HttpClient httpClient)
 {
     private const string BaseUrl = "https://dccon.dcinside.com";
     private const string ImageBaseUrl = "https://dcimg5.dcinside.com/dccon.php";
 
-    private readonly HttpClient _httpClient;
-
-    public DcconHttpClient(HttpClient httpClient)
-    {
-        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-    }
+    private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
     /// <summary>
     /// 검색/목록 페이지의 HTML을 가져온다.
@@ -46,15 +41,9 @@ internal class DcconHttpClient
     public async Task<string> GetPackageDetailJsonAsync(int packageIndex, CancellationToken cancellationToken = default)
     {
         var url = $"{BaseUrl}/index/package_detail";
-        var content = new FormUrlEncodedContent(new[]
-        {
-            new KeyValuePair<string, string>("package_idx", packageIndex.ToString())
-        });
+        var content = new FormUrlEncodedContent([new KeyValuePair<string, string>("package_idx", packageIndex.ToString())]);
 
-        var request = new HttpRequestMessage(HttpMethod.Post, url)
-        {
-            Content = content
-        };
+        var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
         request.Headers.Add("X-Requested-With", "XMLHttpRequest");
 
         var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);

@@ -40,8 +40,7 @@ public class DcconClient : IDcconClient, IDisposable
     /// <param name="httpClient">사용할 HttpClient 인스턴스</param>
     public DcconClient(HttpClient httpClient)
     {
-        if (httpClient == null)
-            throw new ArgumentNullException(nameof(httpClient));
+        if (httpClient == null) throw new ArgumentNullException(nameof(httpClient));
 
         _httpClient = new DcconHttpClient(httpClient);
         _ownsHttpClient = false;
@@ -55,11 +54,9 @@ public class DcconClient : IDcconClient, IDisposable
         int page = 1,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(query))
-            throw new ArgumentException("검색어가 비어있습니다.", nameof(query));
+        if (string.IsNullOrWhiteSpace(query)) throw new ArgumentException("검색어가 비어있습니다.", nameof(query));
 
-        if (page < 1)
-            throw new ArgumentOutOfRangeException(nameof(page), "페이지 번호는 1 이상이어야 합니다.");
+        if (page < 1) throw new ArgumentOutOfRangeException(nameof(page), "페이지 번호는 1 이상이어야 합니다.");
 
         var sortPath = sort == SearchSort.Hot ? "hot" : "new";
         var typePath = ConvertSearchTypeToPath(searchType);
@@ -73,8 +70,7 @@ public class DcconClient : IDcconClient, IDisposable
     /// <inheritdoc />
     public async Task<SearchResult> GetHotListAsync(int page = 1, CancellationToken cancellationToken = default)
     {
-        if (page < 1)
-            throw new ArgumentOutOfRangeException(nameof(page), "페이지 번호는 1 이상이어야 합니다.");
+        if (page < 1) throw new ArgumentOutOfRangeException(nameof(page), "페이지 번호는 1 이상이어야 합니다.");
 
         var path = $"hot/{page}";
         var html = await _httpClient.GetListPageHtmlAsync(path, cancellationToken).ConfigureAwait(false);
@@ -84,8 +80,7 @@ public class DcconClient : IDcconClient, IDisposable
     /// <inheritdoc />
     public async Task<SearchResult> GetNewListAsync(int page = 1, CancellationToken cancellationToken = default)
     {
-        if (page < 1)
-            throw new ArgumentOutOfRangeException(nameof(page), "페이지 번호는 1 이상이어야 합니다.");
+        if (page < 1) throw new ArgumentOutOfRangeException(nameof(page), "페이지 번호는 1 이상이어야 합니다.");
 
         var path = $"new/{page}";
         var html = await _httpClient.GetListPageHtmlAsync(path, cancellationToken).ConfigureAwait(false);
@@ -95,8 +90,7 @@ public class DcconClient : IDcconClient, IDisposable
     /// <inheritdoc />
     public async Task<DcconPackageDetail> GetPackageDetailAsync(int packageIndex, CancellationToken cancellationToken = default)
     {
-        if (packageIndex <= 0)
-            throw new ArgumentOutOfRangeException(nameof(packageIndex), "패키지 번호는 양수여야 합니다.");
+        if (packageIndex <= 0) throw new ArgumentOutOfRangeException(nameof(packageIndex), "패키지 번호는 양수여야 합니다.");
 
         var json = await _httpClient.GetPackageDetailJsonAsync(packageIndex, cancellationToken).ConfigureAwait(false);
         return ParsePackageDetailJson(json);
@@ -105,11 +99,9 @@ public class DcconClient : IDcconClient, IDisposable
     /// <inheritdoc />
     public async Task<byte[]> DownloadStickerAsync(DcconSticker sticker, CancellationToken cancellationToken = default)
     {
-        if (sticker == null)
-            throw new ArgumentNullException(nameof(sticker));
+        if (sticker == null) throw new ArgumentNullException(nameof(sticker));
 
-        if (string.IsNullOrEmpty(sticker.Path))
-            throw new ArgumentException("스티커의 Path가 비어있습니다.", nameof(sticker));
+        if (string.IsNullOrEmpty(sticker.Path)) throw new ArgumentException("스티커의 Path가 비어있습니다.", nameof(sticker));
 
         return await _httpClient.DownloadImageBytesAsync(sticker.Path, cancellationToken).ConfigureAwait(false);
     }
@@ -117,11 +109,9 @@ public class DcconClient : IDcconClient, IDisposable
     /// <inheritdoc />
     public async Task<Stream> DownloadStickerStreamAsync(DcconSticker sticker, CancellationToken cancellationToken = default)
     {
-        if (sticker == null)
-            throw new ArgumentNullException(nameof(sticker));
+        if (sticker == null) throw new ArgumentNullException(nameof(sticker));
 
-        if (string.IsNullOrEmpty(sticker.Path))
-            throw new ArgumentException("스티커의 Path가 비어있습니다.", nameof(sticker));
+        if (string.IsNullOrEmpty(sticker.Path)) throw new ArgumentException("스티커의 Path가 비어있습니다.", nameof(sticker));
 
         return await _httpClient.DownloadImageStreamAsync(sticker.Path, cancellationToken).ConfigureAwait(false);
     }
@@ -133,11 +123,9 @@ public class DcconClient : IDcconClient, IDisposable
         IProgress<(int Completed, int Total)>? progress = null,
         CancellationToken cancellationToken = default)
     {
-        if (packageIndex <= 0)
-            throw new ArgumentOutOfRangeException(nameof(packageIndex), "패키지 번호는 양수여야 합니다.");
+        if (packageIndex <= 0) throw new ArgumentOutOfRangeException(nameof(packageIndex), "패키지 번호는 양수여야 합니다.");
 
-        if (string.IsNullOrWhiteSpace(outputDirectory))
-            throw new ArgumentException("출력 디렉토리가 비어있습니다.", nameof(outputDirectory));
+        if (string.IsNullOrWhiteSpace(outputDirectory)) throw new ArgumentException("출력 디렉토리가 비어있습니다.", nameof(outputDirectory));
 
         var packageDetail = await GetPackageDetailAsync(packageIndex, cancellationToken).ConfigureAwait(false);
 
@@ -157,8 +145,7 @@ public class DcconClient : IDcconClient, IDisposable
             try
             {
                 var fileName = SanitizeFileName(sticker.Title);
-                if (string.IsNullOrWhiteSpace(fileName))
-                    fileName = $"sticker_{sticker.SortNumber}";
+                if (string.IsNullOrWhiteSpace(fileName)) fileName = $"sticker_{sticker.SortNumber}";
 
                 var filePath = Path.Combine(packageDirectory, $"{fileName}.{sticker.Extension}");
 
@@ -168,10 +155,7 @@ public class DcconClient : IDcconClient, IDisposable
                 var currentCompleted = Interlocked.Increment(ref completed);
                 progress?.Report((currentCompleted, total));
             }
-            finally
-            {
-                semaphore.Release();
-            }
+            finally { semaphore.Release(); }
         });
 
         await Task.WhenAll(tasks).ConfigureAwait(false);
@@ -184,8 +168,7 @@ public class DcconClient : IDcconClient, IDisposable
             var response = JsonSerializer.Deserialize(json, DcconJsonContext.Default.PackageDetailResponse)
                 ?? throw new DcconParsingException("패키지 상세 JSON 파싱 결과가 null입니다.");
 
-            if (response.Info == null)
-                throw new DcconParsingException("패키지 상세 JSON에 'info' 필드가 없습니다.");
+            if (response.Info == null) throw new DcconParsingException("패키지 상세 JSON에 'info' 필드가 없습니다.");
 
             var detail = new DcconPackageDetail
             {
@@ -218,21 +201,14 @@ public class DcconClient : IDcconClient, IDisposable
                 foreach (var tagItem in response.Tags)
                 {
                     var tag = tagItem.Tag ?? string.Empty;
-                    if (!string.IsNullOrEmpty(tag))
-                        detail.Tags.Add(tag);
+                    if (!string.IsNullOrEmpty(tag)) detail.Tags.Add(tag);
                 }
             }
 
             return detail;
         }
-        catch (DcconParsingException)
-        {
-            throw;
-        }
-        catch (Exception exception)
-        {
-            throw new DcconParsingException("패키지 상세 JSON 파싱 중 오류가 발생했습니다.", exception);
-        }
+        catch (DcconParsingException) { throw; }
+        catch (Exception exception) { throw new DcconParsingException("패키지 상세 JSON 파싱 중 오류가 발생했습니다.", exception); }
     }
 
     private static string ConvertSearchTypeToPath(SearchType searchType) => searchType switch
@@ -255,8 +231,7 @@ public class DcconClient : IDcconClient, IDisposable
     {
         if (!_disposed)
         {
-            if (_ownsHttpClient)
-                _innerHttpClient?.Dispose();
+            if (_ownsHttpClient) _innerHttpClient?.Dispose();
 
             _disposed = true;
         }
