@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using dccon.NET;
 using dccon.NET.Models;
@@ -10,6 +11,9 @@ internal class Program
 {
     static async Task Main(string[] args)
     {
+        Console.InputEncoding = Encoding.Unicode;
+        Console.OutputEncoding = Encoding.Unicode;
+
         using var client = new DcconClient();
 
         // 1. 인기 디시콘 목록
