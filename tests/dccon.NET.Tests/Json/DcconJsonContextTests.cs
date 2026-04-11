@@ -126,6 +126,30 @@ public class DcconJsonContextTests
     }
 
     [Fact]
+    public void SourceGeneratedContext_HasListPopularDcconResponseTypeInfo()
+    {
+        var typeInfo = DcconJsonContext.Default.ListPopularDcconResponse;
+
+        Assert.NotNull(typeInfo);
+    }
+
+    [Fact]
+    public void Deserialize_PopularDcconArray_ParsesCorrectly()
+    {
+        var json = """[{"package_idx":"12345","title":"테스트콘","nick_name":"테스터","price":"0","img":"//test.com/img.png"}]""";
+
+        var result = JsonSerializer.Deserialize(json, DcconJsonContext.Default.ListPopularDcconResponse);
+
+        Assert.NotNull(result);
+        Assert.Single(result);
+        Assert.Equal("12345", result[0].PackageIndex);
+        Assert.Equal("테스트콘", result[0].Title);
+        Assert.Equal("테스터", result[0].NickName);
+        Assert.Equal("0", result[0].Price);
+        Assert.Equal("//test.com/img.png", result[0].ImageUrl);
+    }
+
+    [Fact]
     public void Serialize_ThenDeserialize_RoundTripsCorrectly()
     {
         var original = new PackageDetailResponse

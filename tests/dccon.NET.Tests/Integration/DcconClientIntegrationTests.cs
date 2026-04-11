@@ -62,6 +62,42 @@ public class DcconClientIntegrationTests : IDisposable
     }
 
     [Fact]
+    public async Task GetDailyPopularAsync_ReturnsResults()
+    {
+        if (!_shouldRun) return;
+
+        var result = await _client.GetDailyPopularAsync();
+
+        Assert.NotEmpty(result);
+        Assert.True(result.Count <= 5);
+        Assert.All(result, package =>
+        {
+            Assert.True(package.PackageIndex > 0);
+            Assert.False(string.IsNullOrEmpty(package.Title));
+            Assert.False(string.IsNullOrEmpty(package.SellerName));
+            Assert.False(string.IsNullOrEmpty(package.ThumbnailUrl));
+        });
+    }
+
+    [Fact]
+    public async Task GetWeeklyPopularAsync_ReturnsResults()
+    {
+        if (!_shouldRun) return;
+
+        var result = await _client.GetWeeklyPopularAsync();
+
+        Assert.NotEmpty(result);
+        Assert.True(result.Count <= 5);
+        Assert.All(result, package =>
+        {
+            Assert.True(package.PackageIndex > 0);
+            Assert.False(string.IsNullOrEmpty(package.Title));
+            Assert.False(string.IsNullOrEmpty(package.SellerName));
+            Assert.False(string.IsNullOrEmpty(package.ThumbnailUrl));
+        });
+    }
+
+    [Fact]
     public async Task GetPackageDetailAsync_WithValidIndex_ReturnsDetail()
     {
         if (!_shouldRun) return;

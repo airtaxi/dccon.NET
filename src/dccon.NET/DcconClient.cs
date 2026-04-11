@@ -78,6 +78,22 @@ public class DcconClient : IDcconClient, IDisposable
     }
 
     /// <inheritdoc />
+    public async Task<List<DcconPackageSummary>> GetDailyPopularAsync(CancellationToken cancellationToken = default)
+    {
+        var jsonp = await _httpClient.GetPopularDcconJsonpAsync(
+            "dccon_day_top5.php?jsoncallback=day_top5", cancellationToken).ConfigureAwait(false);
+        return JsonpResponseParser.ParsePopularDccon(jsonp);
+    }
+
+    /// <inheritdoc />
+    public async Task<List<DcconPackageSummary>> GetWeeklyPopularAsync(CancellationToken cancellationToken = default)
+    {
+        var jsonp = await _httpClient.GetPopularDcconJsonpAsync(
+            "dccon_week_top5.php?jsoncallback=week_top5", cancellationToken).ConfigureAwait(false);
+        return JsonpResponseParser.ParsePopularDccon(jsonp);
+    }
+
+    /// <inheritdoc />
     public async Task<SearchResult> GetNewListAsync(int page = 1, CancellationToken cancellationToken = default)
     {
         if (page < 1) throw new ArgumentOutOfRangeException(nameof(page), "페이지 번호는 1 이상이어야 합니다.");

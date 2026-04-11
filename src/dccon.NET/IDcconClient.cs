@@ -34,6 +34,18 @@ public interface IDcconClient
     Task<SearchResult> GetHotListAsync(int page = 1, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// 일간 인기 디시콘 Top 5를 가져온다.
+    /// </summary>
+    /// <param name="cancellationToken">취소 토큰</param>
+    Task<System.Collections.Generic.List<DcconPackageSummary>> GetDailyPopularAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 주간 인기 디시콘 Top 5를 가져온다.
+    /// </summary>
+    /// <param name="cancellationToken">취소 토큰</param>
+    Task<System.Collections.Generic.List<DcconPackageSummary>> GetWeeklyPopularAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// 최신 디시콘 목록을 가져온다.
     /// </summary>
     /// <param name="page">페이지 번호 (1부터 시작)</param>

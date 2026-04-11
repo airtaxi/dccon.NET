@@ -17,6 +17,7 @@ internal class DcconHttpClient(HttpClient httpClient)
 {
     private const string BaseUrl = "https://dccon.dcinside.com";
     private const string ImageBaseUrl = "https://dcimg5.dcinside.com/dccon.php";
+    private const string PopularApiBaseUrl = "https://json2.dcinside.com/json1";
 
     private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
@@ -51,6 +52,21 @@ internal class DcconHttpClient(HttpClient httpClient)
         if (response.StatusCode == HttpStatusCode.NotFound)
             throw new DcconNotFoundException($"패키지를 찾을 수 없습니다: {packageIndex}");
 
+        response.EnsureSuccessStatusCode();
+
+        var bytes = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+        return Encoding.UTF8.GetString(bytes);
+    }
+
+    /// <summary>
+    /// 일간/주간 인기 디시콘 JSONP 응답을 가져온다.
+    /// </summary>
+    public async Task<string> GetPopularDcconJsonpAsync(string endpoint, CancellationToken cancellationToken = default)
+    {
+        var url = $"{PopularApiBaseUrl}/{endpoint}";
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+        var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
         var bytes = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
