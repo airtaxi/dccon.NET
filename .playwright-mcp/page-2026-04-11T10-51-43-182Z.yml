@@ -1,0 +1,309 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - link "통합검색 바로가기" [ref=e2] [cursor=pointer]:
+      - /url: "#search_wrap"
+      - generic [ref=e3]: 통합검색 바로가기
+    - link "본문 왼쪽 서브메뉴 영역 바로가기" [ref=e4] [cursor=pointer]:
+      - /url: "#left_cont_wrap"
+      - generic [ref=e5]: 본문 왼쪽 서브메뉴 영역 바로가기
+    - link "본문 오른쪽 컨텐츠 영역 바로가기" [ref=e6] [cursor=pointer]:
+      - /url: "#right_cont_wrap"
+      - generic [ref=e7]: 본문 오른쪽 컨텐츠 영역 바로가기
+  - generic [ref=e8]:
+    - banner [ref=e9]:
+      - generic [ref=e10]:
+        - heading "디시인사이드" [level=1] [ref=e11]:
+          - link "디시인사이드" [ref=e12] [cursor=pointer]:
+            - /url: https://www.dcinside.com/
+            - img "디시인사이드" [ref=e13]
+        - search [ref=e15]:
+          - group "통합검색" [ref=e16]:
+            - generic [ref=e17]:
+              - textbox "검색어 입력" [ref=e19]:
+                - /placeholder: 갤러리 & 통합검색
+              - button [ref=e20] [cursor=pointer]
+              - button "최근 방문" [ref=e21] [cursor=pointer]
+        - list [ref=e23]:
+          - listitem [ref=e24]:
+            - link "갤러리" [ref=e25] [cursor=pointer]:
+              - /url: https://gall.dcinside.com/
+          - listitem [ref=e26]:
+            - text: "|"
+            - link "마이너갤" [ref=e27] [cursor=pointer]:
+              - /url: https://gall.dcinside.com/m
+          - listitem [ref=e28]:
+            - text: "|"
+            - link "미니갤" [ref=e29] [cursor=pointer]:
+              - /url: https://gall.dcinside.com/n
+          - listitem [ref=e30]:
+            - text: "|"
+            - link "인물갤" [ref=e31] [cursor=pointer]:
+              - /url: https://gall.dcinside.com/p
+          - listitem [ref=e32]:
+            - text: "|"
+            - link "갤로그" [ref=e33] [cursor=pointer]:
+              - /url: https://gallog.dcinside.com
+          - listitem [ref=e34]:
+            - text: "|"
+            - link "디시게임" [ref=e35] [cursor=pointer]:
+              - /url: //h5.dcinside.com/game/main
+          - listitem [ref=e36]:
+            - text: "|"
+            - link "이벤트" [ref=e37] [cursor=pointer]:
+              - /url: https://event.dcinside.com
+          - listitem [ref=e38]:
+            - text: "|"
+            - link "디시콘" [ref=e39] [cursor=pointer]:
+              - /url: https://mall.dcinside.com/?from=A08
+          - listitem [ref=e40]:
+            - link "로그인" [ref=e41] [cursor=pointer]:
+              - /url: https://sign.dcinside.com/login?s_url=https%3A%2F%2Fmall.dcinside.com%2Fhot%2F1
+    - navigation [ref=e43]:
+      - list [ref=e44]:
+        - listitem [ref=e45]:
+          - link "갤러리" [ref=e46] [cursor=pointer]:
+            - /url: https://gall.dcinside.com
+        - listitem [ref=e48]:
+          - link "마이너갤" [ref=e49] [cursor=pointer]:
+            - /url: //gall.dcinside.com/m
+        - listitem [ref=e50]:
+          - link "미니갤" [ref=e51] [cursor=pointer]:
+            - /url: //gall.dcinside.com/n
+        - listitem [ref=e52]:
+          - link "인물갤" [ref=e53] [cursor=pointer]:
+            - /url: //gall.dcinside.com/p
+        - listitem [ref=e54]:
+          - link "갤로그" [ref=e55] [cursor=pointer]:
+            - /url: https://gallog.dcinside.com
+        - listitem [ref=e56]:
+          - button [ref=e57] [cursor=pointer]
+      - generic [ref=e58]:
+        - link "어제 981,115개 게시글 등록" [ref=e60] [cursor=pointer]:
+          - /url: https://gall.dcinside.com/board/lists/?id=dclottery
+          - text: 어제
+          - emphasis [ref=e61]: 981,115개
+          - text: 게시글 등록
+        - link "어제 2,669,217개 댓글 등록" [ref=e63] [cursor=pointer]:
+          - /url: https://gall.dcinside.com/board/lists/?id=dclottery
+          - text: 어제
+          - emphasis [ref=e64]: 2,669,217개
+          - text: 댓글 등록
+        - generic [ref=e65]:
+          - text: 총 갤러리 수
+          - emphasis [ref=e66]: 93,853개
+        - link "디시 로터리 응모" [ref=e68] [cursor=pointer]:
+          - /url: https://gall.dcinside.com/board/lists/?id=dclottery
+    - main [ref=e69]:
+      - generic [ref=e70]:
+        - list [ref=e72]:
+          - listitem [ref=e73]:
+            - link "디시콘샵" [ref=e74] [cursor=pointer]:
+              - /url: https://dccon.dcinside.com
+          - listitem [ref=e75]:
+            - link "MY디시콘" [ref=e76] [cursor=pointer]:
+              - /url: /my/buy_list
+            - list [ref=e77]:
+              - listitem [ref=e78]:
+                - link "구매내역" [ref=e79] [cursor=pointer]:
+                  - /url: /my/buy_list
+              - listitem [ref=e80]:
+                - link "판매/등록 내역" [ref=e81] [cursor=pointer]:
+                  - /url: /my/sale_list
+              - listitem [ref=e82]:
+                - link "판매중지/신고 내역" [ref=e83] [cursor=pointer]:
+                  - /url: /my/stop_sale_list
+          - listitem [ref=e84]:
+            - generic [ref=e85]: 디시콘 제작
+            - list [ref=e86]:
+              - listitem [ref=e87]:
+                - link "디시콘 등록" [ref=e88] [cursor=pointer]:
+                  - /url: /regist/
+              - listitem [ref=e89]:
+                - link "이용방법" [ref=e90] [cursor=pointer]:
+                  - /url: /guide/use_guide
+              - listitem [ref=e91]:
+                - link "제작가이드" [ref=e92] [cursor=pointer]:
+                  - /url: /guide/regist_guide
+        - generic [ref=e93]:
+          - generic [ref=e94]:
+            - heading "디시콘샵" [level=3] [ref=e95]
+            - generic [ref=e96]:
+              - generic [ref=e98] [cursor=pointer]:
+                - text: 디시콘명
+                - emphasis [ref=e99]
+              - group "디시콘 검색" [ref=e101]:
+                - generic [ref=e103]:
+                  - textbox "검색어 입력" [ref=e105]
+                  - button [ref=e106] [cursor=pointer]
+          - generic [ref=e107]:
+            - generic [ref=e108]:
+              - generic [ref=e109]:
+                - button "일간 인기 디시콘" [ref=e110] [cursor=pointer]
+                - button "주간 인기 디시콘" [ref=e111] [cursor=pointer]
+              - list [ref=e112]:
+                - listitem [ref=e113]:
+                  - link "트릭컬 댕글콘6알파 트릭컬 댕글콘6알파 거북새" [ref=e114] [cursor=pointer]:
+                    - /url: "#169601"
+                    - img "트릭컬 댕글콘6알파" [ref=e115]
+                    - strong [ref=e116]: 트릭컬 댕글콘6알파
+                    - generic [ref=e117]: 거북새
+                - listitem [ref=e119]:
+                  - link "이상한 동물농장 이상한 동물농장 as12" [ref=e120] [cursor=pointer]:
+                    - /url: "#168838"
+                    - img "이상한 동물농장" [ref=e121]
+                    - strong [ref=e122]: 이상한 동물농장
+                    - generic [ref=e123]: as12
+                - listitem [ref=e125]:
+                  - link "만기 루미콘 만기 루미콘 만기팔천" [ref=e126] [cursor=pointer]:
+                    - /url: "#169458"
+                    - img "만기 루미콘" [ref=e127]
+                    - strong [ref=e128]: 만기 루미콘
+                    - generic [ref=e129]: 만기팔천
+                - listitem [ref=e131]:
+                  - link "이상한 동물농장2 이상한 동물농장2 as12" [ref=e132] [cursor=pointer]:
+                    - /url: "#169453"
+                    - img "이상한 동물농장2" [ref=e133]
+                    - strong [ref=e134]: 이상한 동물농장2
+                    - generic [ref=e135]: as12
+                - listitem [ref=e137]:
+                  - link "밤우 스피키콘 밤우 스피키콘 밤우" [ref=e138] [cursor=pointer]:
+                    - /url: "#166270"
+                    - img "밤우 스피키콘" [ref=e139]
+                    - strong [ref=e140]: 밤우 스피키콘
+                    - generic [ref=e141]: 밤우
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - button "인기 디시콘" [ref=e145] [cursor=pointer]
+                - button "신상 디시콘" [ref=e146] [cursor=pointer]
+              - list [ref=e147]:
+                - listitem [ref=e148]:
+                  - link "디시콘 만두콘 무료 디시콘" [ref=e149] [cursor=pointer]:
+                    - /url: "#15276"
+                    - img "디시콘" [ref=e150]
+                    - strong [ref=e151]: 만두콘 무료
+                    - generic [ref=e152]: 디시콘
+                - listitem [ref=e154]:
+                  - link "디시콘 만두콘3 디시콘" [ref=e155] [cursor=pointer]:
+                    - /url: "#63214"
+                    - img "디시콘" [ref=e156]
+                    - strong [ref=e157]: 만두콘3
+                    - generic [ref=e158]: 디시콘
+                - listitem [ref=e160]:
+                  - link "디시콘 만두콘4 디시콘" [ref=e161] [cursor=pointer]:
+                    - /url: "#88345"
+                    - img "디시콘" [ref=e162]
+                    - strong [ref=e163]: 만두콘4
+                    - generic [ref=e164]: 디시콘
+                - listitem [ref=e166]:
+                  - link "디시콘 만두콘 디시콘" [ref=e167] [cursor=pointer]:
+                    - /url: "#86920"
+                    - img "디시콘" [ref=e168]
+                    - strong [ref=e169]: 만두콘
+                    - generic [ref=e170]: 디시콘
+                - listitem [ref=e172]:
+                  - link "디시콘 만두콘2 디시콘" [ref=e173] [cursor=pointer]:
+                    - /url: "#17221"
+                    - img "디시콘" [ref=e174]
+                    - strong [ref=e175]: 만두콘2
+                    - generic [ref=e176]: 디시콘
+                - listitem [ref=e178]:
+                  - link "디시콘 리나콘 디시콘" [ref=e179] [cursor=pointer]:
+                    - /url: "#86929"
+                    - img "디시콘" [ref=e180]
+                    - strong [ref=e181]: 리나콘
+                    - generic [ref=e182]: 디시콘
+                - listitem [ref=e184]:
+                  - link "디시콘 찌그러진페페하이재 겨울왕국" [ref=e185] [cursor=pointer]:
+                    - /url: "#42885"
+                    - img "디시콘" [ref=e186]
+                    - strong [ref=e187]: 찌그러진페페하이재
+                    - generic [ref=e188]: 겨울왕국
+                - listitem [ref=e190]:
+                  - link "디시콘 만두콘 친구들! 딱따라딱" [ref=e191] [cursor=pointer]:
+                    - /url: "#92234"
+                    - img "디시콘" [ref=e192]
+                    - strong [ref=e193]: 만두콘 친구들!
+                    - generic [ref=e194]: 딱따라딱
+                - listitem [ref=e196]:
+                  - link "디시콘 희노애락 페페콘 고양이껌" [ref=e197] [cursor=pointer]:
+                    - /url: "#137267"
+                    - img "디시콘" [ref=e198]
+                    - strong [ref=e199]: 희노애락 페페콘
+                    - generic [ref=e200]: 고양이껌
+                - listitem [ref=e202]:
+                  - link "디시콘 통합 그림판 동물콘 부들잼" [ref=e203] [cursor=pointer]:
+                    - /url: "#83379"
+                    - img "디시콘" [ref=e204]
+                    - strong [ref=e205]: 통합 그림판 동물콘
+                    - generic [ref=e206]: 부들잼
+                - listitem [ref=e208]:
+                  - link "디시콘 트오세M콘 2탄 탈퇴한 이용자" [ref=e209] [cursor=pointer]:
+                    - /url: "#114022"
+                    - img "디시콘" [ref=e210]
+                    - strong [ref=e211]: 트오세M콘 2탄
+                    - generic [ref=e212]: 탈퇴한 이용자
+                - listitem [ref=e214]:
+                  - link "디시콘 노짱콘 플래티넘 상금이4" [ref=e215] [cursor=pointer]:
+                    - /url: "#81513"
+                    - img "디시콘" [ref=e216]
+                    - strong [ref=e217]: 노짱콘 플래티넘
+                    - generic [ref=e218]: 상금이4
+                - listitem [ref=e220]:
+                  - link "디시콘 제리콘2 몬길갤" [ref=e221] [cursor=pointer]:
+                    - /url: "#45208"
+                    - img "디시콘" [ref=e222]
+                    - strong [ref=e223]: 제리콘2
+                    - generic [ref=e224]: 몬길갤
+                - listitem [ref=e226]:
+                  - link "디시콘 뉴페페콘 2021 탈퇴한 이용자" [ref=e227] [cursor=pointer]:
+                    - /url: "#88128"
+                    - img "디시콘" [ref=e228]
+                    - strong [ref=e229]: 뉴페페콘 2021
+                    - generic [ref=e230]: 탈퇴한 이용자
+                - listitem [ref=e232]:
+                  - link "디시콘 좋은말콘 라면이조아요" [ref=e233] [cursor=pointer]:
+                    - /url: "#6312"
+                    - img "디시콘" [ref=e234]
+                    - strong [ref=e235]: 좋은말콘
+                    - generic [ref=e236]: 라면이조아요
+            - generic [ref=e238]:
+              - emphasis [ref=e239]: "1"
+              - link "2" [ref=e240] [cursor=pointer]:
+                - /url: https://dccon.dcinside.com/hot/2
+              - link "3" [ref=e241] [cursor=pointer]:
+                - /url: https://dccon.dcinside.com/hot/3
+              - link "4" [ref=e242] [cursor=pointer]:
+                - /url: https://dccon.dcinside.com/hot/4
+              - link "5" [ref=e243] [cursor=pointer]:
+                - /url: https://dccon.dcinside.com/hot/5
+              - link "6" [ref=e244] [cursor=pointer]:
+                - /url: https://dccon.dcinside.com/hot/6
+              - link "7" [ref=e245] [cursor=pointer]:
+                - /url: https://dccon.dcinside.com/hot/7
+              - link "8" [ref=e246] [cursor=pointer]:
+                - /url: https://dccon.dcinside.com/hot/8
+              - link "9" [ref=e247] [cursor=pointer]:
+                - /url: https://dccon.dcinside.com/hot/9
+              - link "10" [ref=e248] [cursor=pointer]:
+                - /url: https://dccon.dcinside.com/hot/10
+              - link "다음" [ref=e249] [cursor=pointer]:
+                - /url: https://dccon.dcinside.com/hot/11
+              - link "끝" [ref=e250] [cursor=pointer]:
+                - /url: https://dccon.dcinside.com/hot/5880
+    - contentinfo [ref=e251]:
+      - generic [ref=e252]:
+        - link "회사소개" [ref=e253] [cursor=pointer]:
+          - /url: https://www.dcinside.com/company
+        - link "제휴안내" [ref=e254] [cursor=pointer]:
+          - /url: https://www.dcinside.com/company#alliance
+        - link "광고안내" [ref=e255] [cursor=pointer]:
+          - /url: https://nstatic.dcinside.com/dc/dcad/w/index.html
+        - link "이용약관" [ref=e256] [cursor=pointer]:
+          - /url: https://nstatic.dcinside.com/dc/w/policy/policy_index.html
+        - link "개인정보처리방침" [ref=e257] [cursor=pointer]:
+          - /url: https://nstatic.dcinside.com/dc/w/policy/privacy_index.html
+        - link "청소년보호정책" [ref=e258] [cursor=pointer]:
+          - /url: https://nstatic.dcinside.com/dc/w/policy/youth_policy.html
+      - generic [ref=e259]: Copyright ⓒ 1999 - 2026 dcinside. All rights reserved.
+  - iframe [ref=e260]:
+    

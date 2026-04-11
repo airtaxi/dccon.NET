@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace dccon.NET.Json;
 
@@ -24,6 +25,7 @@ internal class PackageDetailResponse
 internal class PackageInfoResponse
 {
     [JsonPropertyName("package_idx")]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public int PackageIndex { get; set; }
 
     [JsonPropertyName("title")]
@@ -60,6 +62,7 @@ internal class StickerDetailResponse
     public string? Extension { get; set; }
 
     [JsonPropertyName("sort_no")]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public int SortNumber { get; set; }
 }
 

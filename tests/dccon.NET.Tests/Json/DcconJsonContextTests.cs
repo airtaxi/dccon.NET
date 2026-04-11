@@ -190,6 +190,17 @@ public class DcconJsonContextTests
     }
 
     [Fact]
+    public void Deserialize_WithStringPackageIdx_ParsesAsInt()
+    {
+        var json = """{"info": {"package_idx": "168838"}}""";
+
+        var response = JsonSerializer.Deserialize(json, DcconJsonContext.Default.PackageDetailResponse)!;
+
+        Assert.NotNull(response.Info);
+        Assert.Equal(168838, response.Info.PackageIndex);
+    }
+
+    [Fact]
     public void Deserialize_WithInvalidJson_ThrowsJsonException()
     {
         var invalidJson = "not valid json";
