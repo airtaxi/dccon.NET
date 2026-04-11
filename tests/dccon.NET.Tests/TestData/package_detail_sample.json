@@ -13,13 +13,13 @@
       "path": "sticker_path_1",
       "title": "스티커1",
       "ext": "png",
-      "sort_no": 1
+      "sort": 1
     },
     {
       "path": "sticker_path_2",
       "title": "스티커2",
       "ext": "gif",
-      "sort_no": 2
+      "sort": 2
     }
   ],
   "tags": [
