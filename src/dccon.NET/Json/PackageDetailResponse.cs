@@ -61,7 +61,7 @@ internal class StickerDetailResponse
     [JsonPropertyName("ext")]
     public string? Extension { get; set; }
 
-    [JsonPropertyName("sort_no")]
+    [JsonPropertyName("sort")]
     [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public int SortNumber { get; set; }
 }
