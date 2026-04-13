@@ -189,11 +189,14 @@ public class DcconClient : IDcconClient, IDisposable
             var detail = new DcconPackageDetail
             {
                 PackageIndex = response.Info.PackageIndex,
+                SaleCount = response.Info.SaleCount,
+                IconCount = response.Info.IconCount,
                 Title = response.Info.Title ?? string.Empty,
                 Description = response.Info.Description ?? string.Empty,
                 MainImagePath = response.Info.MainImagePath ?? string.Empty,
                 SellerName = response.Info.SellerName ?? string.Empty,
                 RegistrationDate = response.Info.RegistrationDate ?? string.Empty,
+                RegistrationDateShort = response.Info.RegistrationDateShort ?? string.Empty,
                 State = response.Info.State ?? string.Empty
             };
 

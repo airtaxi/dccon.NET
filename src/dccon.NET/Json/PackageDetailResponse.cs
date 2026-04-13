@@ -28,6 +28,14 @@ internal class PackageInfoResponse
     [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public int PackageIndex { get; set; }
 
+    [JsonPropertyName("sale_count")]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+    public int SaleCount { get; set; }
+
+    [JsonPropertyName("icon_cnt")]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+    public int IconCount { get; set; }
+
     [JsonPropertyName("title")]
     public string? Title { get; set; }
 
@@ -40,8 +48,11 @@ internal class PackageInfoResponse
     [JsonPropertyName("seller_name")]
     public string? SellerName { get; set; }
 
-    [JsonPropertyName("reg_date_short")]
+    [JsonPropertyName("reg_date")]
     public string? RegistrationDate { get; set; }
+
+    [JsonPropertyName("reg_date_short")]
+    public string? RegistrationDateShort { get; set; }
 
     [JsonPropertyName("state")]
     public string? State { get; set; }
