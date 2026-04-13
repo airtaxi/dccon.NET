@@ -146,7 +146,7 @@ public class DcconClient : IDcconClient, IDisposable
         var packageDetail = await GetPackageDetailAsync(packageIndex, cancellationToken).ConfigureAwait(false);
 
         // 패키지명으로 하위 폴더 생성
-        var safeDirectoryName = SanitizeFileName(packageDetail.Title);
+        var safeDirectoryName = DcconFileNameHelper.SanitizeFileName(packageDetail.Title);
         var packageDirectory = Path.Combine(outputDirectory, safeDirectoryName);
         Directory.CreateDirectory(packageDirectory);
 
@@ -160,10 +160,7 @@ public class DcconClient : IDcconClient, IDisposable
             await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
-                var fileName = SanitizeFileName(sticker.Title);
-                if (string.IsNullOrWhiteSpace(fileName)) fileName = $"sticker_{sticker.SortNumber}";
-
-                var filePath = Path.Combine(packageDirectory, $"{fileName}.{sticker.Extension}");
+                var filePath = Path.Combine(packageDirectory, DcconFileNameHelper.GetStickerFileName(sticker));
 
                 var imageData = await _httpClient.DownloadImageBytesAsync(sticker.Path, cancellationToken).ConfigureAwait(false);
                 File.WriteAllBytes(filePath, imageData);
@@ -237,13 +234,6 @@ public class DcconClient : IDcconClient, IDisposable
         SearchType.Tags => "tags",
         _ => "title",
     };
-
-    private static string SanitizeFileName(string fileName)
-    {
-        var invalidChars = Path.GetInvalidFileNameChars();
-        var sanitized = new string([.. fileName.Where(character => !invalidChars.Contains(character))]);
-        return string.IsNullOrWhiteSpace(sanitized) ? "unnamed" : sanitized;
-    }
 
     /// <inheritdoc />
     public void Dispose()

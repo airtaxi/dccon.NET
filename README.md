@@ -112,6 +112,24 @@ await client.DownloadPackageAsync(
     progress: progress);
 ```
 
+### 다운로드 파일명 예측
+
+`DcconFileNameHelper`를 사용하면 다운로드 시 사용되는 파일명을 사전에 알 수 있습니다:
+
+```csharp
+var detail = await client.GetPackageDetailAsync(packageIndex: 42885);
+
+foreach (var sticker in detail.Stickers)
+{
+    // DownloadPackageAsync에서 저장되는 파일명과 동일
+    string fileName = DcconFileNameHelper.GetStickerFileName(sticker);
+    Console.WriteLine(fileName); // 예: "페페웃음.png"
+}
+
+// 파일명 안전 변환만 필요한 경우
+string safeName = DcconFileNameHelper.SanitizeFileName("잘못된/파일:명");
+```
+
 ### HttpClient 주입 (DI 패턴)
 
 ```csharp
@@ -144,6 +162,13 @@ var result = await client.SearchAsync("페페", cancellationToken: cancellationT
 | `DownloadStickerAsync` | 스티커 이미지 byte[] 다운로드 |
 | `DownloadStickerStreamAsync` | 스티커 이미지 Stream 다운로드 |
 | `DownloadPackageAsync` | 패키지 전체 일괄 다운로드 |
+
+### 유틸리티
+
+| 클래스 | 메서드 | 설명 |
+|--------|--------|------|
+| `DcconFileNameHelper` | `SanitizeFileName` | 파일명에 사용할 수 없는 문자를 제거 |
+| `DcconFileNameHelper` | `GetStickerFileName` | 스티커 다운로드 시 사용되는 파일명 반환 |
 
 ### 모델
 
