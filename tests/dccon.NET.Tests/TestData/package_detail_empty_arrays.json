@@ -1,13 +1,26 @@
 {
-  "info": {
-    "package_idx": 99999,
-    "title": "빈 패키지",
-    "description": "",
-    "main_img_path": "",
-    "seller_name": "판매자",
-    "reg_date_short": "2024.06.01",
-    "state": "S"
-  },
-  "detail": [],
-  "tags": []
+    "info": {
+        "package_idx": "6312",
+        "title": "좋은말콘",
+        "category": "C",
+        "description": "좋은 말을 씁시다",
+        "price": "0",
+        "period": "365",
+        "icon_cnt": "20",
+        "state": "S",
+        "open": "Y",
+        "sale_count": "53647",
+        "reg_date": "2016-02-13 00:43:40",
+        "seller_name": "라면이조아요",
+        "code": "A08",
+        "seller_type": "P",
+        "mandoo": "0",
+        "main_img_path": "62b5df2be09d3ca567b1c5bc12d46b394aa3b1058c6e4d0ca41648b65def276e57ef3a1ba89c2652e8547a07829dc1a92805d81566dbf3ac7d19addf92661af4519bd5a06c4464acf134",
+        "list_img_path": "62b5df2be09d3ca567b1c5bc12d46b394aa3b1058c6e4d0ca41648b65def276e57ef3a1ba89c2652e8547a07829dc1a92805d81566dbf3ac7d19addf92661bfc6b29ed6961e610ee5dcf",
+        "reg_date_short": "2016.02.13",
+        "residual": false,
+        "register": false
+    },
+    "detail": [],
+    "tags": []
 }
