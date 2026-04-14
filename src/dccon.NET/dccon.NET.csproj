@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/airtaxi/dccon.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/airtaxi/dccon.NET</PackageProjectUrl>
-    <Version>0.4.0</Version>
+    <Version>0.4.1</Version>
     <Authors>이호원</Authors>
     <Description>비공식 디시인사이드 디시콘(DCcon) .NET 라이브러리. 검색, 조회, 다운로드 기능을 제공합니다.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
