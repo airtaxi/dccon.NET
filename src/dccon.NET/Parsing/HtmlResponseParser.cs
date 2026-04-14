@@ -39,6 +39,9 @@ internal static class HtmlResponseParser
                 if (int.TryParse(numberText, out int totalCount)) result.TotalCount = totalCount;
             }
 
+            // 검색 결과가 없으면 빈 결과 반환 (API가 인기순 결과를 대신 반환하는 것을 방지)
+            if (result.TotalCount == 0) return result;
+
             // 패키지 목록 파싱
             var packageElements = document.QuerySelectorAll("li.div_package");
             foreach (var packageElement in packageElements)
