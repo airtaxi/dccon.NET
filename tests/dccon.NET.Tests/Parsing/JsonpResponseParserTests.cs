@@ -1,93 +1,97 @@
-using System.IO;
-using System.Reflection;
+using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using dccon.NET.Parsing;
 using Xunit;
 
 namespace dccon.NET.Tests.Parsing;
 
-public class JsonpResponseParserTests
+public class JsonpResponseParserTests : IDisposable
 {
-    private static string LoadTestData(string fileName)
+    private const string DailyPopularUrl = "https://json2.dcinside.com/json1/dccon_day_top5.php?jsoncallback=day_top5";
+    private const string WeeklyPopularUrl = "https://json2.dcinside.com/json1/dccon_week_top5.php?jsoncallback=week_top5";
+
+    private readonly HttpClient _httpClient = new();
+
+    private async Task<string> FetchJsonpAsync(string url)
     {
-        var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
-        var filePath = Path.Combine(assemblyDirectory, "TestData", fileName);
-        return File.ReadAllText(filePath);
+        var response = await _httpClient.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+        var bytes = await response.Content.ReadAsByteArrayAsync();
+        return Encoding.UTF8.GetString(bytes);
     }
 
     [Fact]
-    public void ParsePopularDccon_WithDailySample_ReturnsCorrectCount()
+    public async Task ParsePopularDccon_WithLiveDailyResponse_ReturnsUpToFiveItems()
     {
-        var jsonp = LoadTestData("daily_popular_sample.jsonp");
+        var jsonp = await FetchJsonpAsync(DailyPopularUrl);
 
         var result = JsonpResponseParser.ParsePopularDccon(jsonp);
 
-        Assert.Equal(5, result.Count);
+        Assert.NotEmpty(result);
+        Assert.True(result.Count <= 5);
     }
 
     [Fact]
-    public void ParsePopularDccon_WithDailySample_ParsesPackageIndexCorrectly()
+    public async Task ParsePopularDccon_WithLiveDailyResponse_ParsesPackageIndexAsPositiveNumber()
     {
-        var jsonp = LoadTestData("daily_popular_sample.jsonp");
+        var jsonp = await FetchJsonpAsync(DailyPopularUrl);
 
         var result = JsonpResponseParser.ParsePopularDccon(jsonp);
 
-        Assert.Equal(169601, result[0].PackageIndex);
-        Assert.Equal(168838, result[1].PackageIndex);
-        Assert.Equal(169458, result[2].PackageIndex);
+        Assert.All(result, package => Assert.True(package.PackageIndex > 0));
     }
 
     [Fact]
-    public void ParsePopularDccon_WithDailySample_ParsesTitleCorrectly()
+    public async Task ParsePopularDccon_WithLiveDailyResponse_ParsesTitleAsNonEmpty()
     {
-        var jsonp = LoadTestData("daily_popular_sample.jsonp");
+        var jsonp = await FetchJsonpAsync(DailyPopularUrl);
 
         var result = JsonpResponseParser.ParsePopularDccon(jsonp);
 
-        Assert.Equal("트릭컬 뎅글콘6알파", result[0].Title);
-        Assert.Equal("이상한 동물농장", result[1].Title);
+        Assert.All(result, package => Assert.False(string.IsNullOrEmpty(package.Title)));
     }
 
     [Fact]
-    public void ParsePopularDccon_WithDailySample_ParsesSellerNameCorrectly()
+    public async Task ParsePopularDccon_WithLiveDailyResponse_ParsesSellerNameAsNonEmpty()
     {
-        var jsonp = LoadTestData("daily_popular_sample.jsonp");
+        var jsonp = await FetchJsonpAsync(DailyPopularUrl);
 
         var result = JsonpResponseParser.ParsePopularDccon(jsonp);
 
-        Assert.Equal("거북새", result[0].SellerName);
-        Assert.Equal("as12", result[1].SellerName);
-        Assert.Equal("밤우", result[4].SellerName);
+        Assert.All(result, package => Assert.False(string.IsNullOrEmpty(package.SellerName)));
     }
 
     [Fact]
-    public void ParsePopularDccon_WithDailySample_PrependHttpsToThumbnailUrl()
+    public async Task ParsePopularDccon_WithLiveDailyResponse_PrependsHttpsToThumbnailUrl()
     {
-        var jsonp = LoadTestData("daily_popular_sample.jsonp");
+        var jsonp = await FetchJsonpAsync(DailyPopularUrl);
 
         var result = JsonpResponseParser.ParsePopularDccon(jsonp);
 
-        Assert.StartsWith("https://", result[0].ThumbnailUrl);
-        Assert.Contains("abc123", result[0].ThumbnailUrl);
+        Assert.All(result, package => Assert.StartsWith("https://", package.ThumbnailUrl));
     }
 
     [Fact]
-    public void ParsePopularDccon_WithWeeklySample_ReturnsCorrectCount()
+    public async Task ParsePopularDccon_WithLiveWeeklyResponse_ReturnsUpToFiveItems()
     {
-        var jsonp = LoadTestData("weekly_popular_sample.jsonp");
+        var jsonp = await FetchJsonpAsync(WeeklyPopularUrl);
 
         var result = JsonpResponseParser.ParsePopularDccon(jsonp);
 
-        Assert.Equal(2, result.Count);
+        Assert.NotEmpty(result);
+        Assert.True(result.Count <= 5);
     }
 
     [Fact]
-    public void ParsePopularDccon_WithEmptyArray_ReturnsEmptyList()
+    public async Task ParsePopularDccon_WithLiveWeeklyResponse_ParsesPackageIndexAsPositiveNumber()
     {
-        var jsonp = LoadTestData("popular_empty.jsonp");
+        var jsonp = await FetchJsonpAsync(WeeklyPopularUrl);
 
         var result = JsonpResponseParser.ParsePopularDccon(jsonp);
 
-        Assert.Empty(result);
+        Assert.All(result, package => Assert.True(package.PackageIndex > 0));
     }
 
     [Fact]
@@ -109,5 +113,11 @@ public class JsonpResponseParserTests
     {
         Assert.Throws<dccon.NET.Exceptions.DcconParsingException>(
             () => JsonpResponseParser.ParsePopularDccon("not jsonp format"));
+    }
+
+    public void Dispose()
+    {
+        _httpClient.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

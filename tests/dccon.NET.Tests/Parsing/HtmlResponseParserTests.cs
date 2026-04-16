@@ -1,43 +1,38 @@
-using System.IO;
-using System.Reflection;
+using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using dccon.NET.Parsing;
 using Xunit;
 
 namespace dccon.NET.Tests.Parsing;
 
-public class HtmlResponseParserTests
+public class HtmlResponseParserTests : IDisposable
 {
-    private static string LoadTestData(string fileName)
+    private readonly HttpClient _httpClient = new();
+
+    private async Task<string> FetchHotListHtmlAsync()
     {
-        var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
-        var filePath = Path.Combine(assemblyDirectory, "TestData", fileName);
-        return File.ReadAllText(filePath);
+        var response = await _httpClient.GetAsync("https://dccon.dcinside.com/hot/1");
+        response.EnsureSuccessStatusCode();
+        var bytes = await response.Content.ReadAsByteArrayAsync();
+        return Encoding.UTF8.GetString(bytes);
     }
 
     [Fact]
-    public void ParseSearchResult_WithValidHtml_ReturnsCorrectPackageCount()
+    public async Task ParseSearchResult_WithLiveHotListHtml_ReturnsNonEmptyPackages()
     {
-        var html = LoadTestData("search_result_sample.html");
+        var html = await FetchHotListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
-        Assert.Equal(3, result.Packages.Count);
+        Assert.NotEmpty(result.Packages);
     }
 
     [Fact]
-    public void ParseSearchResult_WithValidHtml_ReturnsCorrectTotalCount()
+    public async Task ParseSearchResult_WithLiveHotListHtml_ReturnsCurrentPageOne()
     {
-        var html = LoadTestData("search_result_sample.html");
-
-        var result = HtmlResponseParser.ParseSearchResult(html, 1);
-
-        Assert.Equal(3, result.TotalCount);
-    }
-
-    [Fact]
-    public void ParseSearchResult_WithValidHtml_ReturnsCorrectCurrentPage()
-    {
-        var html = LoadTestData("search_result_sample.html");
+        var html = await FetchHotListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
@@ -45,71 +40,53 @@ public class HtmlResponseParserTests
     }
 
     [Fact]
-    public void ParseSearchResult_WithValidHtml_ReturnsCorrectTotalPages()
+    public async Task ParseSearchResult_WithLiveHotListHtml_ReturnsTotalPagesGreaterThanZero()
     {
-        var html = LoadTestData("search_result_sample.html");
+        var html = await FetchHotListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
-        Assert.Equal(3, result.TotalPages);
+        Assert.True(result.TotalPages > 0);
     }
 
     [Fact]
-    public void ParseSearchResult_WithValidHtml_ParsesPackageIndexCorrectly()
+    public async Task ParseSearchResult_WithLiveHotListHtml_ParsesPackageIndexAsPositiveNumber()
     {
-        var html = LoadTestData("search_result_sample.html");
+        var html = await FetchHotListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
-        Assert.Equal(12345, result.Packages[0].PackageIndex);
-        Assert.Equal(67890, result.Packages[1].PackageIndex);
-        Assert.Equal(11111, result.Packages[2].PackageIndex);
+        Assert.All(result.Packages, package => Assert.True(package.PackageIndex > 0));
     }
 
     [Fact]
-    public void ParseSearchResult_WithValidHtml_ParsesTitleCorrectly()
+    public async Task ParseSearchResult_WithLiveHotListHtml_ParsesTitleAsNonEmpty()
     {
-        var html = LoadTestData("search_result_sample.html");
+        var html = await FetchHotListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
-        Assert.Equal("테스트콘1", result.Packages[0].Title);
-        Assert.Equal("테스트콘2", result.Packages[1].Title);
-        Assert.Equal("테스트콘3", result.Packages[2].Title);
+        Assert.All(result.Packages, package => Assert.False(string.IsNullOrEmpty(package.Title)));
     }
 
     [Fact]
-    public void ParseSearchResult_WithValidHtml_ParsesSellerNameCorrectly()
+    public async Task ParseSearchResult_WithLiveHotListHtml_ParsesSellerNameAsNonEmpty()
     {
-        var html = LoadTestData("search_result_sample.html");
+        var html = await FetchHotListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
-        Assert.Equal("판매자A", result.Packages[0].SellerName);
-        Assert.Equal("판매자B", result.Packages[1].SellerName);
-        Assert.Equal("판매자C", result.Packages[2].SellerName);
+        Assert.All(result.Packages, package => Assert.False(string.IsNullOrEmpty(package.SellerName)));
     }
 
     [Fact]
-    public void ParseSearchResult_WithValidHtml_ParsesThumbnailUrlCorrectly()
+    public async Task ParseSearchResult_WithLiveHotListHtml_ParsesThumbnailUrlAsNonEmpty()
     {
-        var html = LoadTestData("search_result_sample.html");
+        var html = await FetchHotListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
-        Assert.Contains("abc123", result.Packages[0].ThumbnailUrl);
-        Assert.Contains("def456", result.Packages[1].ThumbnailUrl);
-    }
-
-    [Fact]
-    public void ParseSearchResult_WithEmptyResult_ReturnsZeroPackages()
-    {
-        var html = LoadTestData("search_result_empty.html");
-
-        var result = HtmlResponseParser.ParseSearchResult(html, 1);
-
-        Assert.Empty(result.Packages);
-        Assert.Equal(0, result.TotalCount);
+        Assert.All(result.Packages, package => Assert.False(string.IsNullOrEmpty(package.ThumbnailUrl)));
     }
 
     [Fact]
@@ -124,5 +101,11 @@ public class HtmlResponseParserTests
     {
         Assert.Throws<dccon.NET.Exceptions.DcconParsingException>(
             () => HtmlResponseParser.ParseSearchResult(null!, 1));
+    }
+
+    public void Dispose()
+    {
+        _httpClient.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

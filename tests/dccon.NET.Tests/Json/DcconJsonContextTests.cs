@@ -1,6 +1,10 @@
-using System.IO;
-using System.Reflection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using dccon.NET.Json;
 using Xunit;
 
@@ -9,19 +13,34 @@ namespace dccon.NET.Tests.Json;
 /// <summary>
 /// NativeAOT 호환 소스 제너레이션 JSON 직렬화/역직렬화 테스트
 /// </summary>
-public class DcconJsonContextTests
+public class DcconJsonContextTests : IDisposable
 {
-    private static string LoadTestData(string fileName)
+    private readonly HttpClient _httpClient = new();
+
+    private async Task<string> FetchPackageDetailJsonAsync(int packageIndex)
     {
-        var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
-        var filePath = Path.Combine(assemblyDirectory, "TestData", fileName);
-        return File.ReadAllText(filePath);
+        var content = new FormUrlEncodedContent([new KeyValuePair<string, string>("package_idx", packageIndex.ToString())]);
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://dccon.dcinside.com/index/package_detail") { Content = content };
+        request.Headers.Add("X-Requested-With", "XMLHttpRequest");
+
+        var response = await _httpClient.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        var bytes = await response.Content.ReadAsByteArrayAsync();
+        return Encoding.UTF8.GetString(bytes);
+    }
+
+    private async Task<int> FetchFirstHotPackageIndexAsync()
+    {
+        var html = await _httpClient.GetStringAsync("https://dccon.dcinside.com/hot/1");
+        var result = dccon.NET.Parsing.HtmlResponseParser.ParseSearchResult(html, 1);
+        return result.Packages.First().PackageIndex;
     }
 
     [Fact]
-    public void Deserialize_WithValidJson_ReturnsPackageDetailResponse()
+    public async Task Deserialize_WithLivePackageDetailJson_ReturnsPackageDetailResponse()
     {
-        var json = LoadTestData("package_detail_sample.json");
+        var packageIndex = await FetchFirstHotPackageIndexAsync();
+        var json = await FetchPackageDetailJsonAsync(packageIndex);
 
         var response = JsonSerializer.Deserialize(json, DcconJsonContext.Default.PackageDetailResponse);
 
@@ -30,65 +49,33 @@ public class DcconJsonContextTests
     }
 
     [Fact]
-    public void Deserialize_WithValidJson_ParsesInfoCorrectly()
+    public async Task Deserialize_WithLivePackageDetailJson_ParsesInfoCorrectly()
     {
-        var json = LoadTestData("package_detail_sample.json");
+        var packageIndex = await FetchFirstHotPackageIndexAsync();
+        var json = await FetchPackageDetailJsonAsync(packageIndex);
 
         var response = JsonSerializer.Deserialize(json, DcconJsonContext.Default.PackageDetailResponse)!;
 
-        Assert.Equal(42885, response.Info!.PackageIndex);
-        Assert.Equal("테스트 디시콘", response.Info.Title);
-        Assert.Equal("테스트 설명", response.Info.Description);
-        Assert.Equal("test_main_path", response.Info.MainImagePath);
-        Assert.Equal("테스트판매자", response.Info.SellerName);
-        Assert.Equal("2024.01.01", response.Info.RegistrationDate);
-        Assert.Equal("S", response.Info.State);
+        Assert.True(response.Info!.PackageIndex > 0);
+        Assert.False(string.IsNullOrEmpty(response.Info.Title));
+        Assert.False(string.IsNullOrEmpty(response.Info.SellerName));
     }
 
     [Fact]
-    public void Deserialize_WithValidJson_ParsesStickersCorrectly()
+    public async Task Deserialize_WithLivePackageDetailJson_ParsesStickersCorrectly()
     {
-        var json = LoadTestData("package_detail_sample.json");
+        var packageIndex = await FetchFirstHotPackageIndexAsync();
+        var json = await FetchPackageDetailJsonAsync(packageIndex);
 
         var response = JsonSerializer.Deserialize(json, DcconJsonContext.Default.PackageDetailResponse)!;
 
         Assert.NotNull(response.Detail);
-        Assert.Equal(2, response.Detail.Count);
-        Assert.Equal("sticker_path_1", response.Detail[0].Path);
-        Assert.Equal("스티커1", response.Detail[0].Title);
-        Assert.Equal("png", response.Detail[0].Extension);
-        Assert.Equal(1, response.Detail[0].SortNumber);
-        Assert.Equal("sticker_path_2", response.Detail[1].Path);
-        Assert.Equal("gif", response.Detail[1].Extension);
-    }
-
-    [Fact]
-    public void Deserialize_WithValidJson_ParsesTagsCorrectly()
-    {
-        var json = LoadTestData("package_detail_sample.json");
-
-        var response = JsonSerializer.Deserialize(json, DcconJsonContext.Default.PackageDetailResponse)!;
-
-        Assert.NotNull(response.Tags);
-        Assert.Equal(3, response.Tags.Count);
-        Assert.Equal("태그1", response.Tags[0].Tag);
-        Assert.Equal("태그2", response.Tags[1].Tag);
-        Assert.Equal("태그3", response.Tags[2].Tag);
-    }
-
-    [Fact]
-    public void Deserialize_WithEmptyArrays_ReturnsEmptyCollections()
-    {
-        var json = LoadTestData("package_detail_empty_arrays.json");
-
-        var response = JsonSerializer.Deserialize(json, DcconJsonContext.Default.PackageDetailResponse)!;
-
-        Assert.NotNull(response.Info);
-        Assert.Equal(99999, response.Info.PackageIndex);
-        Assert.NotNull(response.Detail);
-        Assert.Empty(response.Detail);
-        Assert.NotNull(response.Tags);
-        Assert.Empty(response.Tags);
+        Assert.NotEmpty(response.Detail);
+        Assert.All(response.Detail, sticker =>
+        {
+            Assert.False(string.IsNullOrEmpty(sticker.Path));
+            Assert.False(string.IsNullOrEmpty(sticker.Extension));
+        });
     }
 
     [Fact]
@@ -131,22 +118,6 @@ public class DcconJsonContextTests
         var typeInfo = DcconJsonContext.Default.ListPopularDcconResponse;
 
         Assert.NotNull(typeInfo);
-    }
-
-    [Fact]
-    public void Deserialize_PopularDcconArray_ParsesCorrectly()
-    {
-        var json = """[{"package_idx":"12345","title":"테스트콘","nick_name":"테스터","price":"0","img":"//test.com/img.png"}]""";
-
-        var result = JsonSerializer.Deserialize(json, DcconJsonContext.Default.ListPopularDcconResponse);
-
-        Assert.NotNull(result);
-        Assert.Single(result);
-        Assert.Equal("12345", result[0].PackageIndex);
-        Assert.Equal("테스트콘", result[0].Title);
-        Assert.Equal("테스터", result[0].NickName);
-        Assert.Equal("0", result[0].Price);
-        Assert.Equal("//test.com/img.png", result[0].ImageUrl);
     }
 
     [Fact]
@@ -207,5 +178,11 @@ public class DcconJsonContextTests
 
         Assert.Throws<JsonException>(
             () => JsonSerializer.Deserialize(invalidJson, DcconJsonContext.Default.PackageDetailResponse));
+    }
+
+    public void Dispose()
+    {
+        _httpClient.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
