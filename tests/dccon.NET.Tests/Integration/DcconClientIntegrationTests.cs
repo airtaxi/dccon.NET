@@ -17,7 +17,7 @@ public class DcconClientIntegrationTests : IDisposable
     [Fact]
     public async Task SearchAsync_WithValidQuery_ReturnsResults()
     {
-        var result = await _client.SearchAsync("페페", SearchType.Title, SearchSort.Hot);
+        var result = await _client.SearchAsync("페페", DcconSearchType.Title, DcconSearchSort.Hot);
 
         Assert.True(result.TotalCount > 0);
         Assert.NotEmpty(result.Packages);
