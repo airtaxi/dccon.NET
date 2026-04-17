@@ -174,12 +174,12 @@ var result = await client.SearchAsync("페페", cancellationToken: cancellationT
 
 | 클래스 | 설명 |
 |--------|------|
-| `SearchResult` | 검색 결과 (패키지 목록 + 페이지네이션) |
+| `DcconSearchResult` | 검색 결과 (패키지 목록 + 페이지네이션) |
 | `DcconPackageSummary` | 패키지 요약 (검색 결과 항목) |
 | `DcconPackageDetail` | 패키지 상세 (스티커 목록 + 태그 포함) |
 | `DcconSticker` | 개별 스티커 정보 |
-| `SearchSort` | 정렬 방식 (Hot, New) |
-| `SearchType` | 검색 유형 (Title, NickName, Tags) |
+| `DcconSearchSort` | 정렬 방식 (Hot, New) |
+| `DcconSearchType` | 검색 유형 (Title, NickName, Tags) |
 
 ## 요구 사항
 

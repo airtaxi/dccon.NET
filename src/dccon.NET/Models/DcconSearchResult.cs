@@ -5,7 +5,7 @@ namespace dccon.NET.Models;
 /// <summary>
 /// 디시콘 검색/목록 조회 결과 (페이지네이션 포함)
 /// </summary>
-public class SearchResult
+public class DcconSearchResult
 {
     /// <summary>검색 결과 총 건수</summary>
     public int TotalCount { get; set; }

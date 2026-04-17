@@ -15,7 +15,7 @@ internal static class HtmlResponseParser
     /// <summary>
     /// 검색/목록 HTML에서 SearchResult를 추출한다.
     /// </summary>
-    public static SearchResult ParseSearchResult(string html, int currentPage)
+    public static DcconSearchResult ParseSearchResult(string html, int currentPage)
     {
         if (string.IsNullOrWhiteSpace(html)) throw new DcconParsingException("파싱할 HTML이 비어있습니다.");
 
@@ -24,7 +24,7 @@ internal static class HtmlResponseParser
             var parser = new HtmlParser();
             var document = parser.ParseDocument(html);
 
-            var result = new SearchResult
+            var result = new DcconSearchResult
             {
                 CurrentPage = currentPage,
                 Packages = []

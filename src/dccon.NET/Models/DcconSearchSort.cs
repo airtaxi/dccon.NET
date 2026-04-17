@@ -3,7 +3,7 @@ namespace dccon.NET.Models;
 /// <summary>
 /// 디시콘 검색 시 정렬 방식
 /// </summary>
-public enum SearchSort
+public enum DcconSearchSort
 {
     /// <summary>인기순</summary>
     Hot,

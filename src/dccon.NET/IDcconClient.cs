@@ -19,10 +19,10 @@ public interface IDcconClient
     /// <param name="sort">정렬 방식 (인기순, 최신순)</param>
     /// <param name="page">페이지 번호 (1부터 시작)</param>
     /// <param name="cancellationToken">취소 토큰</param>
-    Task<SearchResult> SearchAsync(
+    Task<DcconSearchResult> SearchAsync(
         string query,
-        SearchType searchType = SearchType.Title,
-        SearchSort sort = SearchSort.Hot,
+        DcconSearchType searchType = DcconSearchType.Title,
+        DcconSearchSort sort = DcconSearchSort.Hot,
         int page = 1,
         CancellationToken cancellationToken = default);
 
@@ -31,7 +31,7 @@ public interface IDcconClient
     /// </summary>
     /// <param name="page">페이지 번호 (1부터 시작)</param>
     /// <param name="cancellationToken">취소 토큰</param>
-    Task<SearchResult> GetHotListAsync(int page = 1, CancellationToken cancellationToken = default);
+    Task<DcconSearchResult> GetHotListAsync(int page = 1, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 일간 인기 디시콘 Top 5를 가져온다.
@@ -50,7 +50,7 @@ public interface IDcconClient
     /// </summary>
     /// <param name="page">페이지 번호 (1부터 시작)</param>
     /// <param name="cancellationToken">취소 토큰</param>
-    Task<SearchResult> GetNewListAsync(int page = 1, CancellationToken cancellationToken = default);
+    Task<DcconSearchResult> GetNewListAsync(int page = 1, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 디시콘 패키지 상세 정보를 가져온다.

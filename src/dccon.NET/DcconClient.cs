@@ -47,10 +47,10 @@ public class DcconClient : IDcconClient, IDisposable
     }
 
     /// <inheritdoc />
-    public async Task<SearchResult> SearchAsync(
+    public async Task<DcconSearchResult> SearchAsync(
         string query,
-        SearchType searchType = SearchType.Title,
-        SearchSort sort = SearchSort.Hot,
+        DcconSearchType searchType = DcconSearchType.Title,
+        DcconSearchSort sort = DcconSearchSort.Hot,
         int page = 1,
         CancellationToken cancellationToken = default)
     {
@@ -58,7 +58,7 @@ public class DcconClient : IDcconClient, IDisposable
 
         if (page < 1) throw new ArgumentOutOfRangeException(nameof(page), "페이지 번호는 1 이상이어야 합니다.");
 
-        var sortPath = sort == SearchSort.Hot ? "hot" : "new";
+        var sortPath = sort == DcconSearchSort.Hot ? "hot" : "new";
         var typePath = ConvertSearchTypeToPath(searchType);
         var encodedQuery = Uri.EscapeDataString(query);
         var path = $"{sortPath}/{page}/{typePath}/{encodedQuery}";
@@ -68,7 +68,7 @@ public class DcconClient : IDcconClient, IDisposable
     }
 
     /// <inheritdoc />
-    public async Task<SearchResult> GetHotListAsync(int page = 1, CancellationToken cancellationToken = default)
+    public async Task<DcconSearchResult> GetHotListAsync(int page = 1, CancellationToken cancellationToken = default)
     {
         if (page < 1) throw new ArgumentOutOfRangeException(nameof(page), "페이지 번호는 1 이상이어야 합니다.");
 
@@ -94,7 +94,7 @@ public class DcconClient : IDcconClient, IDisposable
     }
 
     /// <inheritdoc />
-    public async Task<SearchResult> GetNewListAsync(int page = 1, CancellationToken cancellationToken = default)
+    public async Task<DcconSearchResult> GetNewListAsync(int page = 1, CancellationToken cancellationToken = default)
     {
         if (page < 1) throw new ArgumentOutOfRangeException(nameof(page), "페이지 번호는 1 이상이어야 합니다.");
 
@@ -227,11 +227,11 @@ public class DcconClient : IDcconClient, IDisposable
         catch (Exception exception) { throw new DcconParsingException("패키지 상세 JSON 파싱 중 오류가 발생했습니다.", exception); }
     }
 
-    private static string ConvertSearchTypeToPath(SearchType searchType) => searchType switch
+    private static string ConvertSearchTypeToPath(DcconSearchType searchType) => searchType switch
     {
-        SearchType.Title => "title",
-        SearchType.NickName => "nick_name",
-        SearchType.Tags => "tags",
+        DcconSearchType.Title => "title",
+        DcconSearchType.NickName => "nick_name",
+        DcconSearchType.Tags => "tags",
         _ => "title",
     };
 

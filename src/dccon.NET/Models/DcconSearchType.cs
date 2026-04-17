@@ -3,7 +3,7 @@ namespace dccon.NET.Models;
 /// <summary>
 /// 디시콘 검색 유형
 /// </summary>
-public enum SearchType
+public enum DcconSearchType
 {
     /// <summary>디시콘명으로 검색</summary>
     Title,
