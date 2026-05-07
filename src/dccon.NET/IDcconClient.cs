@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,23 +28,22 @@ public interface IDcconClient
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 인기 디시콘 목록을 가져온다.
+    /// 일간 인기 디시콘 Top 100을 가져온다.
     /// </summary>
-    /// <param name="page">페이지 번호 (1부터 시작)</param>
     /// <param name="cancellationToken">취소 토큰</param>
-    Task<DcconSearchResult> GetHotListAsync(int page = 1, CancellationToken cancellationToken = default);
+    Task<List<DcconPackageSummary>> GetDailyPopularAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 일간 인기 디시콘 Top 5를 가져온다.
+    /// 주간 인기 디시콘 Top 100을 가져온다.
     /// </summary>
     /// <param name="cancellationToken">취소 토큰</param>
-    Task<System.Collections.Generic.List<DcconPackageSummary>> GetDailyPopularAsync(CancellationToken cancellationToken = default);
+    Task<List<DcconPackageSummary>> GetWeeklyPopularAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 주간 인기 디시콘 Top 5를 가져온다.
+    /// 월간 인기 디시콘 Top 100을 가져온다.
     /// </summary>
     /// <param name="cancellationToken">취소 토큰</param>
-    Task<System.Collections.Generic.List<DcconPackageSummary>> GetWeeklyPopularAsync(CancellationToken cancellationToken = default);
+    Task<List<DcconPackageSummary>> GetMonthlyPopularAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 최신 디시콘 목록을 가져온다.

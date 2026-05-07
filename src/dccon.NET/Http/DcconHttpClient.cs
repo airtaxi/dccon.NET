@@ -59,7 +59,7 @@ internal class DcconHttpClient(HttpClient httpClient)
     }
 
     /// <summary>
-    /// 일간/주간 인기 디시콘 JSONP 응답을 가져온다.
+    /// 일간/주간/월간 인기 디시콘 JSONP 응답을 가져온다.
     /// </summary>
     public async Task<string> GetPopularDcconJsonpAsync(string endpoint, CancellationToken cancellationToken = default)
     {

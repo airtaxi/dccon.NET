@@ -15,6 +15,8 @@ namespace dccon.NET.Tests.Json;
 /// </summary>
 public class DcconJsonContextTests : IDisposable
 {
+    private const string DailyPopularRequestUri = "https://json2.dcinside.com/json1/dccon_day_top100.php?jsoncallback=day_top100";
+
     private readonly HttpClient _httpClient = new();
 
     private async Task<string> FetchPackageDetailJsonAsync(int packageIndex)
@@ -29,17 +31,20 @@ public class DcconJsonContextTests : IDisposable
         return Encoding.UTF8.GetString(bytes);
     }
 
-    private async Task<int> FetchFirstHotPackageIndexAsync()
+    private async Task<int> FetchFirstPopularPackageIndexAsync()
     {
-        var html = await _httpClient.GetStringAsync("https://dccon.dcinside.com/hot/1");
-        var result = dccon.NET.Parsing.HtmlResponseParser.ParseSearchResult(html, 1);
-        return result.Packages.First().PackageIndex;
+        var response = await _httpClient.GetAsync(DailyPopularRequestUri);
+        response.EnsureSuccessStatusCode();
+        var bytes = await response.Content.ReadAsByteArrayAsync();
+        var jsonPaddingResponse = Encoding.UTF8.GetString(bytes);
+        var popularPackages = dccon.NET.Parsing.JsonpResponseParser.ParsePopularDccon(jsonPaddingResponse);
+        return popularPackages.First().PackageIndex;
     }
 
     [Fact]
     public async Task Deserialize_WithLivePackageDetailJson_ReturnsPackageDetailResponse()
     {
-        var packageIndex = await FetchFirstHotPackageIndexAsync();
+        var packageIndex = await FetchFirstPopularPackageIndexAsync();
         var json = await FetchPackageDetailJsonAsync(packageIndex);
 
         var response = JsonSerializer.Deserialize(json, DcconJsonContext.Default.PackageDetailResponse);
@@ -51,7 +56,7 @@ public class DcconJsonContextTests : IDisposable
     [Fact]
     public async Task Deserialize_WithLivePackageDetailJson_ParsesInfoCorrectly()
     {
-        var packageIndex = await FetchFirstHotPackageIndexAsync();
+        var packageIndex = await FetchFirstPopularPackageIndexAsync();
         var json = await FetchPackageDetailJsonAsync(packageIndex);
 
         var response = JsonSerializer.Deserialize(json, DcconJsonContext.Default.PackageDetailResponse)!;
@@ -64,7 +69,7 @@ public class DcconJsonContextTests : IDisposable
     [Fact]
     public async Task Deserialize_WithLivePackageDetailJson_ParsesStickersCorrectly()
     {
-        var packageIndex = await FetchFirstHotPackageIndexAsync();
+        var packageIndex = await FetchFirstPopularPackageIndexAsync();
         var json = await FetchPackageDetailJsonAsync(packageIndex);
 
         var response = JsonSerializer.Deserialize(json, DcconJsonContext.Default.PackageDetailResponse)!;

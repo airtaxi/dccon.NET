@@ -68,30 +68,16 @@ public class DcconClient : IDcconClient, IDisposable
     }
 
     /// <inheritdoc />
-    public async Task<DcconSearchResult> GetHotListAsync(int page = 1, CancellationToken cancellationToken = default)
-    {
-        if (page < 1) throw new ArgumentOutOfRangeException(nameof(page), "페이지 번호는 1 이상이어야 합니다.");
-
-        var path = $"hot/{page}";
-        var html = await _httpClient.GetListPageHtmlAsync(path, cancellationToken).ConfigureAwait(false);
-        return HtmlResponseParser.ParseSearchResult(html, page);
-    }
+    public Task<List<DcconPackageSummary>> GetDailyPopularAsync(CancellationToken cancellationToken = default) =>
+        GetPopularDcconAsync("dccon_day_top100.php?jsoncallback=day_top100", cancellationToken);
 
     /// <inheritdoc />
-    public async Task<List<DcconPackageSummary>> GetDailyPopularAsync(CancellationToken cancellationToken = default)
-    {
-        var jsonp = await _httpClient.GetPopularDcconJsonpAsync(
-            "dccon_day_top5.php?jsoncallback=day_top5", cancellationToken).ConfigureAwait(false);
-        return JsonpResponseParser.ParsePopularDccon(jsonp);
-    }
+    public Task<List<DcconPackageSummary>> GetWeeklyPopularAsync(CancellationToken cancellationToken = default) =>
+        GetPopularDcconAsync("dccon_week_top100.php?jsoncallback=week_top100", cancellationToken);
 
     /// <inheritdoc />
-    public async Task<List<DcconPackageSummary>> GetWeeklyPopularAsync(CancellationToken cancellationToken = default)
-    {
-        var jsonp = await _httpClient.GetPopularDcconJsonpAsync(
-            "dccon_week_top5.php?jsoncallback=week_top5", cancellationToken).ConfigureAwait(false);
-        return JsonpResponseParser.ParsePopularDccon(jsonp);
-    }
+    public Task<List<DcconPackageSummary>> GetMonthlyPopularAsync(CancellationToken cancellationToken = default) =>
+        GetPopularDcconAsync("dccon_month_top100.php?jsoncallback=month_top100", cancellationToken);
 
     /// <inheritdoc />
     public async Task<DcconSearchResult> GetNewListAsync(int page = 1, CancellationToken cancellationToken = default)
@@ -234,6 +220,14 @@ public class DcconClient : IDcconClient, IDisposable
         DcconSearchType.Tags => "tags",
         _ => "title",
     };
+
+    private async Task<List<DcconPackageSummary>> GetPopularDcconAsync(
+        string endpoint,
+        CancellationToken cancellationToken)
+    {
+        var jsonPaddingResponse = await _httpClient.GetPopularDcconJsonpAsync(endpoint, cancellationToken).ConfigureAwait(false);
+        return JsonpResponseParser.ParsePopularDccon(jsonPaddingResponse);
+    }
 
     /// <inheritdoc />
     public void Dispose()

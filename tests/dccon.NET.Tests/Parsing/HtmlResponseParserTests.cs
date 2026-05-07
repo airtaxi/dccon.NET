@@ -11,18 +11,18 @@ public class HtmlResponseParserTests : IDisposable
 {
     private readonly HttpClient _httpClient = new();
 
-    private async Task<string> FetchHotListHtmlAsync()
+    private async Task<string> FetchNewListHtmlAsync()
     {
-        var response = await _httpClient.GetAsync("https://dccon.dcinside.com/hot/1");
+        var response = await _httpClient.GetAsync("https://dccon.dcinside.com/new/1");
         response.EnsureSuccessStatusCode();
         var bytes = await response.Content.ReadAsByteArrayAsync();
         return Encoding.UTF8.GetString(bytes);
     }
 
     [Fact]
-    public async Task ParseSearchResult_WithLiveHotListHtml_ReturnsNonEmptyPackages()
+    public async Task ParseSearchResult_WithLiveNewListHtml_ReturnsNonEmptyPackages()
     {
-        var html = await FetchHotListHtmlAsync();
+        var html = await FetchNewListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
@@ -30,9 +30,9 @@ public class HtmlResponseParserTests : IDisposable
     }
 
     [Fact]
-    public async Task ParseSearchResult_WithLiveHotListHtml_ReturnsCurrentPageOne()
+    public async Task ParseSearchResult_WithLiveNewListHtml_ReturnsCurrentPageOne()
     {
-        var html = await FetchHotListHtmlAsync();
+        var html = await FetchNewListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
@@ -40,9 +40,9 @@ public class HtmlResponseParserTests : IDisposable
     }
 
     [Fact]
-    public async Task ParseSearchResult_WithLiveHotListHtml_ReturnsTotalPagesGreaterThanZero()
+    public async Task ParseSearchResult_WithLiveNewListHtml_ReturnsTotalPagesGreaterThanZero()
     {
-        var html = await FetchHotListHtmlAsync();
+        var html = await FetchNewListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
@@ -50,9 +50,9 @@ public class HtmlResponseParserTests : IDisposable
     }
 
     [Fact]
-    public async Task ParseSearchResult_WithLiveHotListHtml_ParsesPackageIndexAsPositiveNumber()
+    public async Task ParseSearchResult_WithLiveNewListHtml_ParsesPackageIndexAsPositiveNumber()
     {
-        var html = await FetchHotListHtmlAsync();
+        var html = await FetchNewListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
@@ -60,9 +60,9 @@ public class HtmlResponseParserTests : IDisposable
     }
 
     [Fact]
-    public async Task ParseSearchResult_WithLiveHotListHtml_ParsesTitleAsNonEmpty()
+    public async Task ParseSearchResult_WithLiveNewListHtml_ParsesTitleAsNonEmpty()
     {
-        var html = await FetchHotListHtmlAsync();
+        var html = await FetchNewListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
@@ -70,9 +70,9 @@ public class HtmlResponseParserTests : IDisposable
     }
 
     [Fact]
-    public async Task ParseSearchResult_WithLiveHotListHtml_ParsesSellerNameAsNonEmpty()
+    public async Task ParseSearchResult_WithLiveNewListHtml_ParsesSellerNameAsNonEmpty()
     {
-        var html = await FetchHotListHtmlAsync();
+        var html = await FetchNewListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 
@@ -80,9 +80,9 @@ public class HtmlResponseParserTests : IDisposable
     }
 
     [Fact]
-    public async Task ParseSearchResult_WithLiveHotListHtml_ParsesThumbnailUrlAsNonEmpty()
+    public async Task ParseSearchResult_WithLiveNewListHtml_ParsesThumbnailUrlAsNonEmpty()
     {
-        var html = await FetchHotListHtmlAsync();
+        var html = await FetchNewListHtmlAsync();
 
         var result = HtmlResponseParser.ParseSearchResult(html, 1);
 

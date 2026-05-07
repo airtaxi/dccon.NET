@@ -14,8 +14,8 @@ dccon.NET은 디시인사이드의 디시콘(DCcon) 스티커를 프로그래밍
 ## 기능
 
 - 🔍 **디시콘 검색** — 디시콘명, 닉네임, 태그로 검색 (인기순/최신순 정렬)
-- 📋 **목록 조회** — 인기 디시콘 / 최신 디시콘 목록
-- 🔥 **인기 디시콘** — 일간/주간 인기 디시콘 Top 5 조회
+- 📋 **목록 조회** — 최신 디시콘 목록
+- 🔥 **인기 디시콘** — 일간/주간/월간 인기 디시콘 Top 100 조회
 - 📦 **패키지 상세** — 패키지 정보, 스티커 목록, 태그 조회
 - ⬇️ **이미지 다운로드** — 개별 스티커 또는 패키지 전체 일괄 다운로드
 - ⚡ **병렬 다운로드** — 패키지 전체 다운로드 시 병렬 처리 + 진행 상태 콜백
@@ -45,26 +45,26 @@ foreach (var package in result.Packages)
     Console.WriteLine($"[{package.PackageIndex}] {package.Title} - {package.SellerName}");
 ```
 
-### 인기/최신 목록 조회
+### 최신 목록 조회
 
 ```csharp
-// 인기 디시콘
-var hotList = await client.GetHotListAsync(page: 1);
-
 // 최신 디시콘
 var newList = await client.GetNewListAsync(page: 1);
 ```
 
-### 일간/주간 인기 디시콘
+### 일간/주간/월간 인기 디시콘
 
 ```csharp
-// 일간 인기 디시콘 Top 5
+// 일간 인기 디시콘 Top 100
 var dailyPopular = await client.GetDailyPopularAsync();
 foreach (var package in dailyPopular)
     Console.WriteLine($"[{package.PackageIndex}] {package.Title} - {package.SellerName}");
 
-// 주간 인기 디시콘 Top 5
+// 주간 인기 디시콘 Top 100
 var weeklyPopular = await client.GetWeeklyPopularAsync();
+
+// 월간 인기 디시콘 Top 100
+var monthlyPopular = await client.GetMonthlyPopularAsync();
 ```
 
 ### 검색 옵션
@@ -73,8 +73,8 @@ var weeklyPopular = await client.GetWeeklyPopularAsync();
 // 태그로 검색, 최신순 정렬, 2페이지
 var result = await client.SearchAsync(
     query: "고양이",
-    searchType: SearchType.Tags,
-    sort: SearchSort.New,
+    searchType: DcconSearchType.Tags,
+    sort: DcconSearchSort.New,
     page: 2);
 ```
 
@@ -154,10 +154,10 @@ var result = await client.SearchAsync("페페", cancellationToken: cancellationT
 | 메서드 | 설명 |
 |--------|------|
 | `SearchAsync` | 디시콘 검색 (디시콘명/닉네임/태그, 인기순/최신순) |
-| `GetHotListAsync` | 인기 디시콘 목록 조회 |
 | `GetNewListAsync` | 최신 디시콘 목록 조회 |
-| `GetDailyPopularAsync` | 일간 인기 디시콘 Top 5 조회 |
-| `GetWeeklyPopularAsync` | 주간 인기 디시콘 Top 5 조회 |
+| `GetDailyPopularAsync` | 일간 인기 디시콘 Top 100 조회 |
+| `GetWeeklyPopularAsync` | 주간 인기 디시콘 Top 100 조회 |
+| `GetMonthlyPopularAsync` | 월간 인기 디시콘 Top 100 조회 |
 | `GetPackageDetailAsync` | 패키지 상세 정보 조회 |
 | `DownloadStickerAsync` | 스티커 이미지 byte[] 다운로드 |
 | `DownloadStickerStreamAsync` | 스티커 이미지 Stream 다운로드 |

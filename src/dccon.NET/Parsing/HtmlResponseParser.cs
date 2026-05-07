@@ -103,14 +103,14 @@ internal static class HtmlResponseParser
 
     private static int ExtractPageNumberFromUrl(string url)
     {
-        // URL 형식: https://dccon.dcinside.com/hot/11/title/페페
-        // 또는: https://dccon.dcinside.com/hot/5
+        // URL 형식: https://dccon.dcinside.com/new/11/title/페페
+        // 또는: https://dccon.dcinside.com/new/5
         try
         {
             var uri = new Uri(url);
             var segments = uri.AbsolutePath.Split(['/'], StringSplitOptions.RemoveEmptyEntries);
 
-            // segments: ["hot", "11", "title", "페페"] 또는 ["hot", "5"]
+            // segments: ["new", "11", "title", "페페"] 또는 ["new", "5"]
             if (segments.Length >= 2 && int.TryParse(segments[1], out int pageNumber)) return pageNumber;
         }
         catch

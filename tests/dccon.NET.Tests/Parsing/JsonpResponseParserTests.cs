@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using dccon.NET.Models;
 using dccon.NET.Parsing;
 using Xunit;
 
@@ -9,89 +11,81 @@ namespace dccon.NET.Tests.Parsing;
 
 public class JsonpResponseParserTests : IDisposable
 {
-    private const string DailyPopularUrl = "https://json2.dcinside.com/json1/dccon_day_top5.php?jsoncallback=day_top5";
-    private const string WeeklyPopularUrl = "https://json2.dcinside.com/json1/dccon_week_top5.php?jsoncallback=week_top5";
+    private const string DailyPopularRequestUri = "https://json2.dcinside.com/json1/dccon_day_top100.php?jsoncallback=day_top100";
+    private const string WeeklyPopularRequestUri = "https://json2.dcinside.com/json1/dccon_week_top100.php?jsoncallback=week_top100";
+    private const string MonthlyPopularRequestUri = "https://json2.dcinside.com/json1/dccon_month_top100.php?jsoncallback=month_top100";
 
     private readonly HttpClient _httpClient = new();
 
-    private async Task<string> FetchJsonpAsync(string url)
+    private async Task<string> FetchJsonPaddingResponseAsync(string requestUri)
     {
-        var response = await _httpClient.GetAsync(url);
+        var response = await _httpClient.GetAsync(requestUri);
         response.EnsureSuccessStatusCode();
         var bytes = await response.Content.ReadAsByteArrayAsync();
         return Encoding.UTF8.GetString(bytes);
     }
 
-    [Fact]
-    public async Task ParsePopularDccon_WithLiveDailyResponse_ReturnsUpToFiveItems()
+    private async Task<List<DcconPackageSummary>> FetchPopularPackagesAsync(string requestUri)
     {
-        var jsonp = await FetchJsonpAsync(DailyPopularUrl);
-
-        var result = JsonpResponseParser.ParsePopularDccon(jsonp);
-
-        Assert.NotEmpty(result);
-        Assert.True(result.Count <= 5);
+        var jsonPaddingResponse = await FetchJsonPaddingResponseAsync(requestUri);
+        return JsonpResponseParser.ParsePopularDccon(jsonPaddingResponse);
     }
 
-    [Fact]
-    public async Task ParsePopularDccon_WithLiveDailyResponse_ParsesPackageIndexAsPositiveNumber()
+    [Theory]
+    [InlineData(DailyPopularRequestUri)]
+    [InlineData(WeeklyPopularRequestUri)]
+    [InlineData(MonthlyPopularRequestUri)]
+    public async Task ParsePopularDccon_WithLiveTop100Response_ReturnsMoreThanFiveAndUpToOneHundredItems(string requestUri)
     {
-        var jsonp = await FetchJsonpAsync(DailyPopularUrl);
+        var result = await FetchPopularPackagesAsync(requestUri);
 
-        var result = JsonpResponseParser.ParsePopularDccon(jsonp);
+        Assert.NotEmpty(result);
+        Assert.True(result.Count > 5);
+        Assert.True(result.Count <= 100);
+    }
+
+    [Theory]
+    [InlineData(DailyPopularRequestUri)]
+    [InlineData(WeeklyPopularRequestUri)]
+    [InlineData(MonthlyPopularRequestUri)]
+    public async Task ParsePopularDccon_WithLiveTop100Response_ParsesPackageIndexAsPositiveNumber(string requestUri)
+    {
+        var result = await FetchPopularPackagesAsync(requestUri);
 
         Assert.All(result, package => Assert.True(package.PackageIndex > 0));
     }
 
-    [Fact]
-    public async Task ParsePopularDccon_WithLiveDailyResponse_ParsesTitleAsNonEmpty()
+    [Theory]
+    [InlineData(DailyPopularRequestUri)]
+    [InlineData(WeeklyPopularRequestUri)]
+    [InlineData(MonthlyPopularRequestUri)]
+    public async Task ParsePopularDccon_WithLiveTop100Response_ParsesTitleAsNonEmpty(string requestUri)
     {
-        var jsonp = await FetchJsonpAsync(DailyPopularUrl);
-
-        var result = JsonpResponseParser.ParsePopularDccon(jsonp);
+        var result = await FetchPopularPackagesAsync(requestUri);
 
         Assert.All(result, package => Assert.False(string.IsNullOrEmpty(package.Title)));
     }
 
-    [Fact]
-    public async Task ParsePopularDccon_WithLiveDailyResponse_ParsesSellerNameAsNonEmpty()
+    [Theory]
+    [InlineData(DailyPopularRequestUri)]
+    [InlineData(WeeklyPopularRequestUri)]
+    [InlineData(MonthlyPopularRequestUri)]
+    public async Task ParsePopularDccon_WithLiveTop100Response_ParsesSellerNameAsNonEmpty(string requestUri)
     {
-        var jsonp = await FetchJsonpAsync(DailyPopularUrl);
-
-        var result = JsonpResponseParser.ParsePopularDccon(jsonp);
+        var result = await FetchPopularPackagesAsync(requestUri);
 
         Assert.All(result, package => Assert.False(string.IsNullOrEmpty(package.SellerName)));
     }
 
-    [Fact]
-    public async Task ParsePopularDccon_WithLiveDailyResponse_PrependsHttpsToThumbnailUrl()
+    [Theory]
+    [InlineData(DailyPopularRequestUri)]
+    [InlineData(WeeklyPopularRequestUri)]
+    [InlineData(MonthlyPopularRequestUri)]
+    public async Task ParsePopularDccon_WithLiveTop100Response_PrependsHttpsToThumbnailUrl(string requestUri)
     {
-        var jsonp = await FetchJsonpAsync(DailyPopularUrl);
-
-        var result = JsonpResponseParser.ParsePopularDccon(jsonp);
+        var result = await FetchPopularPackagesAsync(requestUri);
 
         Assert.All(result, package => Assert.StartsWith("https://", package.ThumbnailUrl));
-    }
-
-    [Fact]
-    public async Task ParsePopularDccon_WithLiveWeeklyResponse_ReturnsUpToFiveItems()
-    {
-        var jsonp = await FetchJsonpAsync(WeeklyPopularUrl);
-
-        var result = JsonpResponseParser.ParsePopularDccon(jsonp);
-
-        Assert.NotEmpty(result);
-        Assert.True(result.Count <= 5);
-    }
-
-    [Fact]
-    public async Task ParsePopularDccon_WithLiveWeeklyResponse_ParsesPackageIndexAsPositiveNumber()
-    {
-        var jsonp = await FetchJsonpAsync(WeeklyPopularUrl);
-
-        var result = JsonpResponseParser.ParsePopularDccon(jsonp);
-
-        Assert.All(result, package => Assert.True(package.PackageIndex > 0));
     }
 
     [Fact]

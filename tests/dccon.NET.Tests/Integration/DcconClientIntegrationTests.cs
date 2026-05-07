@@ -29,14 +29,6 @@ public class DcconClientIntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task GetHotListAsync_ReturnsResults()
-    {
-        var result = await _client.GetHotListAsync();
-
-        Assert.NotEmpty(result.Packages);
-    }
-
-    [Fact]
     public async Task GetNewListAsync_ReturnsResults()
     {
         var result = await _client.GetNewListAsync();
@@ -50,7 +42,8 @@ public class DcconClientIntegrationTests : IDisposable
         var result = await _client.GetDailyPopularAsync();
 
         Assert.NotEmpty(result);
-        Assert.True(result.Count <= 5);
+        Assert.True(result.Count > 5);
+        Assert.True(result.Count <= 100);
         Assert.All(result, package =>
         {
             Assert.True(package.PackageIndex > 0);
@@ -66,7 +59,25 @@ public class DcconClientIntegrationTests : IDisposable
         var result = await _client.GetWeeklyPopularAsync();
 
         Assert.NotEmpty(result);
-        Assert.True(result.Count <= 5);
+        Assert.True(result.Count > 5);
+        Assert.True(result.Count <= 100);
+        Assert.All(result, package =>
+        {
+            Assert.True(package.PackageIndex > 0);
+            Assert.False(string.IsNullOrEmpty(package.Title));
+            Assert.False(string.IsNullOrEmpty(package.SellerName));
+            Assert.False(string.IsNullOrEmpty(package.ThumbnailUrl));
+        });
+    }
+
+    [Fact]
+    public async Task GetMonthlyPopularAsync_ReturnsResults()
+    {
+        var result = await _client.GetMonthlyPopularAsync();
+
+        Assert.NotEmpty(result);
+        Assert.True(result.Count > 5);
+        Assert.True(result.Count <= 100);
         Assert.All(result, package =>
         {
             Assert.True(package.PackageIndex > 0);
@@ -79,9 +90,9 @@ public class DcconClientIntegrationTests : IDisposable
     [Fact]
     public async Task GetPackageDetailAsync_WithValidIndex_ReturnsDetail()
     {
-        // 먼저 검색으로 유효한 패키지 인덱스를 가져온다
-        var searchResult = await _client.GetHotListAsync();
-        var firstPackage = searchResult.Packages.First();
+        // 먼저 일간 인기 목록에서 유효한 패키지 인덱스를 가져온다.
+        var popularPackages = await _client.GetDailyPopularAsync();
+        var firstPackage = popularPackages.First();
 
         var detail = await _client.GetPackageDetailAsync(firstPackage.PackageIndex);
 
@@ -97,8 +108,8 @@ public class DcconClientIntegrationTests : IDisposable
     [Fact]
     public async Task DownloadStickerAsync_WithValidSticker_ReturnsBytes()
     {
-        var searchResult = await _client.GetHotListAsync();
-        var firstPackage = searchResult.Packages.First();
+        var popularPackages = await _client.GetDailyPopularAsync();
+        var firstPackage = popularPackages.First();
         var detail = await _client.GetPackageDetailAsync(firstPackage.PackageIndex);
         var firstSticker = detail.Stickers.First();
 

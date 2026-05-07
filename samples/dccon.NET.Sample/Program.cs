@@ -9,33 +9,44 @@ namespace dccon.NET.Sample;
 
 internal class Program
 {
-    static async Task Main(string[] args)
+    static async Task Main(string[] arguments)
     {
         Console.InputEncoding = Encoding.Unicode;
         Console.OutputEncoding = Encoding.Unicode;
 
         using var client = new DcconClient();
 
-        // 1. 인기 디시콘 목록
-        Console.WriteLine("=== 인기 디시콘 목록 ===");
-        var hotList = await client.GetHotListAsync();
-        Console.WriteLine($"총 {hotList.Packages.Count}개 (페이지 {hotList.CurrentPage}/{hotList.TotalPages})");
-        foreach (var package in hotList.Packages.Take(5))
-            Console.WriteLine($"  [{package.PackageIndex}] {package.Title} - {package.SellerName}");
+        // 1. 일간/주간/월간 인기 디시콘
+        Console.WriteLine("=== 일간 인기 디시콘 ===");
+        var dailyPopularPackages = await client.GetDailyPopularAsync();
+        Console.WriteLine($"총 {dailyPopularPackages.Count}개");
+        foreach (var package in dailyPopularPackages.Take(5)) Console.WriteLine($"  [{package.PackageIndex}] {package.Title} - {package.SellerName}");
+
+        Console.WriteLine();
+
+        Console.WriteLine("=== 주간 인기 디시콘 ===");
+        var weeklyPopularPackages = await client.GetWeeklyPopularAsync();
+        Console.WriteLine($"총 {weeklyPopularPackages.Count}개");
+        foreach (var package in weeklyPopularPackages.Take(5)) Console.WriteLine($"  [{package.PackageIndex}] {package.Title} - {package.SellerName}");
+
+        Console.WriteLine();
+
+        Console.WriteLine("=== 월간 인기 디시콘 ===");
+        var monthlyPopularPackages = await client.GetMonthlyPopularAsync();
+        Console.WriteLine($"총 {monthlyPopularPackages.Count}개");
+        foreach (var package in monthlyPopularPackages.Take(5)) Console.WriteLine($"  [{package.PackageIndex}] {package.Title} - {package.SellerName}");
 
         Console.WriteLine();
 
         // 2. 디시콘 검색
         Console.Write("검색어를 입력하세요: ");
         var query = Console.ReadLine();
-        if (string.IsNullOrWhiteSpace(query))
-            query = "페페";
+        if (string.IsNullOrWhiteSpace(query)) query = "페페";
 
         Console.WriteLine($"\n=== '{query}' 검색 결과 ===");
         var searchResult = await client.SearchAsync(query);
         Console.WriteLine($"총 {searchResult.TotalCount}건 (페이지 {searchResult.CurrentPage}/{searchResult.TotalPages})");
-        foreach (var package in searchResult.Packages)
-            Console.WriteLine($"  [{package.PackageIndex}] {package.Title} - {package.SellerName}");
+        foreach (var package in searchResult.Packages) Console.WriteLine($"  [{package.PackageIndex}] {package.Title} - {package.SellerName}");
 
         if (searchResult.Packages.Count == 0)
         {
@@ -53,8 +64,7 @@ internal class Program
         Console.WriteLine($"등록일: {detail.RegistrationDate}");
         Console.WriteLine($"태그: {string.Join(", ", detail.Tags)}");
         Console.WriteLine($"스티커 수: {detail.Stickers.Count}개");
-        foreach (var sticker in detail.Stickers)
-            Console.WriteLine($"  - {sticker.Title}.{sticker.Extension}");
+        foreach (var sticker in detail.Stickers) Console.WriteLine($"  - {sticker.Title}.{sticker.Extension}");
 
         // 4. 패키지 전체 다운로드
         Console.Write("\n이 패키지를 다운로드하시겠습니까? (y/n): ");

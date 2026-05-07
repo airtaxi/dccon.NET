@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace dccon.NET.Json;
 
 /// <summary>
-/// 일간/주간 인기 디시콘 API 응답 JSON 항목
+/// 일간/주간/월간 인기 디시콘 API 응답 JSON 항목
 /// </summary>
 internal class PopularDcconResponse
 {
